@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../widgets/navbar.dart';
 import './time_table.dart';
 import './checkin/geofencing.dart';
 import './checkin/nfc.dart';
@@ -10,8 +11,9 @@ class BaseView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Base View"),
+        title: Text("Header"),
       ),
+      bottomNavigationBar: NavBar(),
       body: Text('BaseView'),
     );
   }
