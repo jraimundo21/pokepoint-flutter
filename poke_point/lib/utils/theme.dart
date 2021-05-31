@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 
-const PrimaryColor = const Color(0xFFb71c1c);
-const PrimaryColorLight = const Color(0xFFf05545);
-const PrimaryColorDark = const Color(0xFF7f0000);
+const PrimaryColor = const Color(0xFF11443c);
+const PrimaryColorLight = const Color(0xFF066758);
+const PrimaryColorDark = const Color(0xFF092B26);
 
-const SecondaryColor = const Color(0xFFb2dfdb);
-const SecondaryColorLight = const Color(0xFFe5ffff);
-const SecondaryColorDark = const Color(0xFF82ada9);
+const SecondaryColor = const Color(0xFFF3A712);
+const SecondaryColorLight = const Color(0xFFf2d395);
+const SecondaryColorDark = const Color(0xFFb87d08);
 
-const Background = const Color(0xFFfffdf7);
+const Background = const Color(0xFFFAF3DD);
 const TextColor = const Color(0xFFffffff);
 
 class MyTheme {
