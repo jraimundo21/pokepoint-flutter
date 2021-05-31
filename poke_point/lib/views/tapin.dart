@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import '../utils/theme.dart';
 
-class TimeTable extends StatelessWidget {
+class TapIn extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
