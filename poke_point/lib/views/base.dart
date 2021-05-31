@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import '../widgets/navbar.dart';
 import './time_table.dart';
-import './checkin/geofencing.dart';
-import './checkin/nfc.dart';
-import './checkin/qrcode.dart';
-import './checkin/manual.dart';
+import './checkin/checkin.dart';
 
 class BaseView extends StatelessWidget {
   @override
