@@ -1,0 +1,47 @@
+----------------------------------------
+
+1 Lista check in / out
+2 nfc
+3 qr code
+4 geofence
+5 
+
+----------------------------------------
+
+QR Code
+Cada utilizador tem um QR code fixo gerado a partir do JWT
+
+O colega (assistente) lê o QR code de quem quer fazer check-in e invoca a função tapIn()
+
+
+----------------------------------------
+Aba de settings
+Ativa e desativa metodos de check in
+
+GPS      o--
+Mapa     --o
+QR Code  --o
+NFC      o--
+
+
+----------------------------------------
+
+> Class
+Timecard
+{
+- local
+- in
+- out
+- timestamp
++ check -in 
++ check -out
++ tap -in
++ tap -out 
+}
+
+> Class
+List
+{
+-<TimeCard>
++sync
+}
