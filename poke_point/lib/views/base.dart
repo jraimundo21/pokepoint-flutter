@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../widgets/navbar.dart';
 import './time_table.dart';
-import './checkin/checkin.dart';
+import './checkin.dart';
 
 class BaseView extends StatelessWidget {
   @override

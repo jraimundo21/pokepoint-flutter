@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import './geofencing.dart';
-import './nfc.dart';
-import './qrcode.dart';
-import './manual.dart';
+import './checkin/geofencing.dart';
+import './checkin/nfc.dart';
+import './checkin/qrcode.dart';
+import './checkin/manual.dart';
 
 class CheckIn extends StatelessWidget {
   @override
