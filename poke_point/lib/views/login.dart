@@ -36,19 +36,19 @@ class LoginScreen extends StatelessWidget {
       top: Radius.circular(10.0),
     );
 
-    return FlutterLogin(
-      hideSignUpButton: true,
-      hideForgotPasswordButton: true,
+    return new FlutterLogin(
       title: 'POKE POINT',
       logo: 'assets/images/poke_point_transparent_onlylogo.png',
       onLogin: _authUser,
-      // onSignup: (_) => Future(null),
+      hideSignUpButton: true,
+      onSignup: (_) => Future(null),
+      hideForgotPasswordButton: true,
+      onRecoverPassword: (_) => Future(null),
       onSubmitAnimationCompleted: () {
         Navigator.of(context).pushReplacement(MaterialPageRoute(
           builder: (context) => BaseView(),
         ));
       },
-      onRecoverPassword: (_) => Future(null),
       theme: LoginTheme(
         primaryColor: PrimaryColorLight.withOpacity(0.3),
         errorColor: Colors.deepOrange,

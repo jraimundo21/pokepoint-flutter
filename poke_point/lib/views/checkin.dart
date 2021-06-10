@@ -7,6 +7,7 @@ import './checkin/qrcode.dart';
 import './checkin/manual.dart';
 import 'package:connectivity/connectivity.dart';
 import 'dart:async';
+import 'dart:ui';
 
 class CheckIn extends StatefulWidget {
   @override
@@ -89,7 +90,10 @@ class _CheckInState extends State<CheckIn> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   DropdownButton(
-                    style: TextStyle(color: TextColor),
+                    style: TextStyle(
+                      color: TextColor,
+                      fontSize: 18,
+                    ),
                     dropdownColor: PrimaryColorLight,
                     value: _option,
                     items: (!_online ? offineOptions : onlineOptions),
@@ -104,7 +108,7 @@ class _CheckInState extends State<CheckIn> {
                     style: TextStyle(
                         color: _online ? Colors.white : Colors.red,
                         fontWeight: FontWeight.bold,
-                        fontSize: 11),
+                        fontSize: 14),
                   )
                 ],
               ),

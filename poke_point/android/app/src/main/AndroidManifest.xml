@@ -3,6 +3,7 @@
    <application
         android:label="poke_point"
         android:icon="@mipmap/ic_launcher">
+        <meta-data android:name="com.google.android.geo.API_KEY" android:value="AIzaSyBJjuvSoeYeFuXmqp55SmxGbi2FvyRXMNY"/>
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"

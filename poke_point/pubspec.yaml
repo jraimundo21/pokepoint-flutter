@@ -17,7 +17,8 @@ dependencies:
   sqflite: ^1.2.1
   flutter_login: ^2.0.0
   connectivity: ^3.0.3
-
+  google_maps_flutter: ^0.5.24+1
+  geolocator: ^5.3.0
   cupertino_icons: ^1.0.2
 
 dev_dependencies:
