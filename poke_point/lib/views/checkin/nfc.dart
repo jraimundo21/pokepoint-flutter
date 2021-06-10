@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:connectivity/connectivity.dart';
 
 class NFC extends StatelessWidget {
   @override

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_login/flutter_login.dart';
 
 const PrimaryColor = const Color(0xFF11443c);
 const PrimaryColorLight = const Color(0xFF066758);
@@ -10,6 +11,7 @@ const SecondaryColorDark = const Color(0xFFb87d08);
 
 const Background = const Color(0xFFFAF3DD);
 const TextColor = const Color(0xFFffffff);
+const SecondaryTextColor = const Color(0xFF092B26);
 
 class MyTheme {
   static final ThemeData myCustom = _buildMyTheme();

@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import './utils/theme.dart';
-import './base.dart';
+import './views/base.dart';
 import './views/login.dart';
 
 void main() {
@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
       title: 'poke-point',
       theme: MyTheme.myCustom,
       home: Scaffold(
-        body: BaseView(),
+        body: LoginScreen(),
       ),
     );
   }

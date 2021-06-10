@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:connectivity/connectivity.dart';
 
 class Manual extends StatelessWidget {
   @override

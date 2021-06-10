@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import './utils/theme.dart';
-import './views/time_table.dart';
-import './views/checkin.dart';
-import './views/tapin.dart';
-import './views/settings.dart';
+import '../utils/theme.dart';
+import './time_table.dart';
+import './checkin.dart';
+import './tapin.dart';
+import './settings.dart';
 
 class BaseView extends StatefulWidget {
   BaseView({Key key}) : super(key: key);
