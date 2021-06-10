@@ -12,9 +12,14 @@ class TapIn extends StatelessWidget {
               height: 150,
             ),
             Container(
-                //
-
-                )
+              child: new Text(
+                'Tap in',
+                style: TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 40),
+              ),
+            )
           ],
         ),
       ),

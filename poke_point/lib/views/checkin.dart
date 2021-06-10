@@ -14,7 +14,7 @@ class CheckIn extends StatefulWidget {
 }
 
 class _CheckInState extends State<CheckIn> {
-  int _value = 1;
+  int _option = 1;
   List<DropdownMenuItem> onlineOptions = [
     DropdownMenuItem(child: Text("Geofencing"), value: 1),
     DropdownMenuItem(child: Text("QR Code"), value: 2),
@@ -23,6 +23,12 @@ class _CheckInState extends State<CheckIn> {
     DropdownMenuItem(child: Text("Manual"), value: 3),
     DropdownMenuItem(child: Text("NFC"), value: 4),
   ];
+  Map<int, Widget> checkInViews = {
+    1: GeoFencing(),
+    2: QRCode(),
+    3: Manual(),
+    4: NFC(),
+  };
   String _connectionStatus = 'Unknown'; //connectivity status
   var _online = false; //connectivity online or offline
   Connectivity _connectivity = Connectivity();
@@ -76,35 +82,34 @@ class _CheckInState extends State<CheckIn> {
         child: new Column(
           children: [
             new Container(
-                color: PrimaryColor, //Colors.amber[600],
-                height: 150,
-                width: MediaQuery.of(context).size.width,
-                child: new Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    DropdownButton(
-                      style: TextStyle(color: TextColor),
-                      dropdownColor: PrimaryColorLight,
-                      value: _value,
-                      items: (!_online ? offineOptions : onlineOptions),
-                      onChanged: (value) {
-                        setState(() {
-                          _value = value;
-                        });
-                      },
-                    ),
-                    new Text(
-                      _connectionStatus,
-                      style: TextStyle(
-                          color: _online ? Colors.white : Colors.red,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 11),
-                    )
-                  ],
-                )),
-            Container(
-                // A sub view do método d checkint
-                )
+              color: PrimaryColor, //Colors.amber[600],
+              height: 150,
+              width: MediaQuery.of(context).size.width,
+              child: new Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  DropdownButton(
+                    style: TextStyle(color: TextColor),
+                    dropdownColor: PrimaryColorLight,
+                    value: _option,
+                    items: (!_online ? offineOptions : onlineOptions),
+                    onChanged: (value) {
+                      setState(() {
+                        _option = value;
+                      });
+                    },
+                  ),
+                  new Text(
+                    _connectionStatus,
+                    style: TextStyle(
+                        color: _online ? Colors.white : Colors.red,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 11),
+                  )
+                ],
+              ),
+            ),
+            checkInViews[_option],
           ],
         ),
       ),

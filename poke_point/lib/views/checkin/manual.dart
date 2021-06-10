@@ -4,8 +4,12 @@ import 'package:connectivity/connectivity.dart';
 class Manual extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Text('Manual Check-in'),
+    return new Container(
+      child: new Text(
+        'Manual',
+        style: TextStyle(
+            color: Colors.black, fontWeight: FontWeight.bold, fontSize: 40),
+      ),
     );
   }
 }

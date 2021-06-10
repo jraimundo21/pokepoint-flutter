@@ -13,9 +13,14 @@ class TimeTable extends StatelessWidget {
               height: 150,
             ),
             Container(
-                //
-
-                )
+              child: new Text(
+                'Timetable',
+                style: TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 40),
+              ),
+            )
           ],
         ),
       ),

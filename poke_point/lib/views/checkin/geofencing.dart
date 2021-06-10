@@ -4,8 +4,12 @@ import 'package:connectivity/connectivity.dart';
 class GeoFencing extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Text('GeoFencing'),
+    return new Container(
+      child: new Text(
+        'Geofencing',
+        style: TextStyle(
+            color: Colors.black, fontWeight: FontWeight.bold, fontSize: 40),
+      ),
     );
   }
 }
