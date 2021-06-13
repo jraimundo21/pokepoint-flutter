@@ -10,26 +10,19 @@ import 'dart:async';
 import 'dart:ui';
 
 class CheckIn extends StatefulWidget {
+  CheckIn({Key key, this.changeCheckInToCheckOut, this.changeBackToTimeTable})
+      : super(key: key);
+
+  final Function() changeCheckInToCheckOut;
+  final Function() changeBackToTimeTable;
+
   @override
   _CheckInState createState() => _CheckInState();
 }
 
 class _CheckInState extends State<CheckIn> {
   int _option = 1;
-  List<DropdownMenuItem> onlineOptions = [
-    DropdownMenuItem(child: Text("Geofencing"), value: 1),
-    DropdownMenuItem(child: Text("QR Code"), value: 2),
-  ];
-  List<DropdownMenuItem> offineOptions = [
-    DropdownMenuItem(child: Text("Manual"), value: 3),
-    DropdownMenuItem(child: Text("NFC"), value: 4),
-  ];
-  Map<int, Widget> checkInViews = {
-    1: GeoFencing(),
-    2: QRCode(),
-    3: Manual(),
-    4: NFC(),
-  };
+
   String _connectionStatus = 'Unknown'; //connectivity status
   var _online = false; //connectivity online or offline
   Connectivity _connectivity = Connectivity();
@@ -38,7 +31,6 @@ class _CheckInState extends State<CheckIn> {
   @override
   void initState() {
     super.initState();
-    onlineOptions.addAll(offineOptions);
     initConnectivity();
     _connectivitySubscription =
         _connectivity.onConnectivityChanged.listen(_updateConnectionStatus);
@@ -78,6 +70,26 @@ class _CheckInState extends State<CheckIn> {
 
   @override
   Widget build(BuildContext context) {
+    List<DropdownMenuItem> offineOptions = [
+      DropdownMenuItem(child: Text("Manual"), value: 1),
+      DropdownMenuItem(child: Text("QR Code"), value: 2),
+      DropdownMenuItem(child: Text("NFC"), value: 3),
+    ];
+    List<DropdownMenuItem> onlineOptions = [
+      DropdownMenuItem(child: Text("Geofencing"), value: 4),
+    ];
+    onlineOptions.addAll(offineOptions);
+    Map<int, Widget> checkInViews = {
+      1: Manual(),
+      2: QRCode(
+          changeCheckInToCheckOut: widget.changeCheckInToCheckOut,
+          changeBackToTimeTable: widget.changeBackToTimeTable),
+      3: NFC(),
+      4: GeoFencing(
+          changeCheckInToCheckOut: widget.changeCheckInToCheckOut,
+          changeBackToTimeTable: widget.changeBackToTimeTable),
+    };
+
     return Scaffold(
       body: Container(
         child: new Column(

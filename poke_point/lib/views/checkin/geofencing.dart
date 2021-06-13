@@ -2,41 +2,151 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:connectivity/connectivity.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import '../../utils/db_helper.dart';
+import '../../widgets/question_dialog.dart';
 import 'dart:async';
 
 class GeoFencing extends StatefulWidget {
+  GeoFencing(
+      {Key key, this.changeCheckInToCheckOut, this.changeBackToTimeTable})
+      : super(key: key);
+
+  final Function() changeCheckInToCheckOut;
+  final Function() changeBackToTimeTable;
+
   @override
   _GeoFencingState createState() => _GeoFencingState();
 }
 
 class _GeoFencingState extends State<GeoFencing> {
+  bool stillTryingToLocate = false;
+  bool disposedCalled = false;
+  bool isMapActivated = true;
+  bool isDialogActive = false;
+  double zoom = 18;
+  CameraPosition position;
+
   DbHelper helper;
+  List<Marker> markers = [];
+  List<Marker> savedLocations = [];
   Timer timer;
   Completer<GoogleMapController> _controller = Completer();
 
-  CameraPosition position = CameraPosition(
-    target: LatLng(41.9028, 12.4964),
-    zoom: 12,
-  );
-
   @override
   void initState() {
+    super.initState();
     helper = DbHelper();
+    this.position = CameraPosition(
+      target: LatLng(38.524762126586864, -8.8921310831539724),
+      zoom: this.zoom,
+    );
+    _getMarkers();
     timer = Timer.periodic(
       Duration(seconds: 1),
-      (Timer t) => _getCurrentLocation(),
+      (Timer t) => {
+        if (!stillTryingToLocate)
+          _getCurrentLocation().then((pos) {
+            addMarker(pos, '%_%curpos%_%', 'You are here!');
+          }).catchError((err) => print(err.toString()))
+      },
     );
-    super.initState();
   }
 
   @override
   void dispose() {
+    disposedCalled = true;
     timer?.cancel();
     super.dispose();
   }
 
+  Future _getMarkers() async {
+    addMarker(Position(latitude: 38.524267, longitude: -8.906476),
+        'myid'.toString(), 'My Place');
+    setState(() {
+      markers = markers;
+    });
+
+// USAR ISTO PARA CARREGAR OS LOCAIS DE TRABALHO
+    // for (Place p in _places) {
+    //   addMarker(
+    //       Position(latitude: p.lat, longitude: p.lon), p.id.toString(), p.name);
+    // }
+    // setState(() {
+    //   markers = markers;
+    // });
+  }
+
+  void addMarker(Position pos, String markerId, String markerTitle) {
+    final marker = Marker(
+        markerId: MarkerId(markerId),
+        position: LatLng(pos.latitude, pos.longitude),
+        infoWindow: InfoWindow(title: markerTitle),
+        icon: (markerId == '%_%curpos%_%')
+            ? BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueAzure)
+            : BitmapDescriptor.defaultMarkerWithHue(
+                BitmapDescriptor.hueOrange));
+
+    if (markerId == '%_%curpos%_%') {
+      markers = savedLocations.toList();
+      markers.add(marker);
+    } else {
+      savedLocations.add(marker);
+    }
+    setState(() {
+      markers = markers;
+    });
+  }
+
+  Future checkLocationForCheckIn(Position curPos) async {
+    savedLocations.forEach((marker) async {
+      double lat = marker.position.latitude;
+      double lon = marker.position.longitude;
+      double distanceInMeters = await Geolocator()
+          .distanceBetween(curPos.latitude, curPos.longitude, lat, lon);
+
+      print(distanceInMeters);
+      if (distanceInMeters <= 20 && mounted && !this.isDialogActive) {
+        this.isDialogActive = true;
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            QuestionDialog askToCheckInDialog = new QuestionDialog(
+              isCheckIn: true,
+              yesCallback: checkIn,
+              noCallback: dontCheckIn,
+            );
+            return askToCheckInDialog;
+          },
+        );
+      }
+    });
+  }
+
+  Future checkIn() async {
+    // Checked-in succefully
+    // Call method to make check-in, probably it can be some logic in the check-in model
+
+    // Callback to change navigation options
+    widget.changeCheckInToCheckOut();
+
+    Fluttertoast.showToast(
+        msg: "You have checked-in successfully",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.CENTER,
+        timeInSecForIosWeb: 5,
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+        fontSize: 20.0);
+  }
+
+  Future dontCheckIn() async {
+    isDialogActive = false;
+    widget.changeBackToTimeTable();
+  }
+
   Future _getCurrentLocation() async {
+    stillTryingToLocate = true;
     bool isGeolocationAvailable = await Geolocator().isLocationServiceEnabled();
     Position _position = Position(
         latitude: this.position.target.latitude,
@@ -45,23 +155,37 @@ class _GeoFencingState extends State<GeoFencing> {
       try {
         _position = await Geolocator()
             .getCurrentPosition(desiredAccuracy: LocationAccuracy.best);
+        await checkLocationForCheckIn(_position);
       } catch (error) {
         return _position;
+      } finally {
+        stillTryingToLocate = false;
       }
     }
 
     Future updateMapPosition() async {
       this.position = CameraPosition(
-          target: LatLng(_position.latitude, _position.longitude), zoom: 12);
+        target: LatLng(_position.latitude, _position.longitude),
+        zoom: this.zoom,
+      );
 
       final GoogleMapController controller = await _controller.future;
-      controller.animateCamera(CameraUpdate.newCameraPosition(position));
+      await controller.animateCamera(CameraUpdate.newCameraPosition(position));
     }
 
-    setState(() {
-      updateMapPosition();
-    });
+    if (!disposedCalled &&
+        this.position.target.latitude != _position.latitude &&
+        this.position.target.longitude != _position.longitude)
+      setState(() {
+        updateMapPosition();
+      });
     return _position;
+  }
+
+  void _onGeoChanged(CameraPosition position) {
+    setState(() {
+      this.zoom = position.zoom;
+    });
   }
 
   @override
@@ -72,7 +196,11 @@ class _GeoFencingState extends State<GeoFencing> {
         height: MediaQuery.of(context).size.height - 290,
         child: GoogleMap(
           initialCameraPosition: position,
-          // markers: Set<Marker>.of(markers),
+          onMapCreated: (GoogleMapController controller) {
+            _controller.complete(controller);
+          },
+          onCameraMove: _onGeoChanged,
+          markers: Set<Marker>.of(markers),
         ),
       ),
     );

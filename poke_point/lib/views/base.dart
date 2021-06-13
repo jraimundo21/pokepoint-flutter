@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../utils/theme.dart';
 import './time_table.dart';
 import './checkin.dart';
+import './checkout.dart';
 import './tapin.dart';
 import './settings.dart';
 
@@ -14,18 +15,61 @@ class BaseView extends StatefulWidget {
 
 class _BaseViewState extends State<BaseView> {
   int selectedIndex = 0;
+  bool iAmCheckedIn = false;
+
+  void changeCheckInToCheckOut() {
+    _changeView(0); // 0 is the first position: 'TimeTable'
+    setState(() {
+      iAmCheckedIn = true;
+    });
+  }
+
+  void changeCheckOutToCheckIn() {
+    _changeView(0); // 0 is the second position: 'TimeTable'
+    setState(() {
+      iAmCheckedIn = false;
+    });
+  }
+
+  void changeBackToTimeTable() {
+    _changeView(0); // 0 is the second position: 'TimeTable'
+  }
+
+  List<BottomNavigationBarItem> checkedOutNavOptions = [
+    BottomNavigationBarItem(icon: new Icon(Icons.timer), label: 'Horas'),
+    BottomNavigationBarItem(
+        icon: new Icon(Icons.adjust_outlined), label: 'Check-in'),
+  ];
+
+  List<BottomNavigationBarItem> checkedInNavOptions = [
+    BottomNavigationBarItem(icon: new Icon(Icons.timer), label: 'Horas'),
+    BottomNavigationBarItem(icon: new Icon(Icons.person_add), label: 'Tap-in'),
+    BottomNavigationBarItem(
+        icon: new Icon(Icons.adjust_outlined), label: 'Check-out'),
+  ];
+
   PageController pageController = PageController(
     initialPage: 0,
     keepPage: true,
   );
 
   Widget buildPageView() {
+    List<Widget> views = [
+      TimeTable(),
+      !iAmCheckedIn
+          ? CheckIn(
+              changeCheckInToCheckOut: this.changeCheckInToCheckOut,
+              changeBackToTimeTable: this.changeBackToTimeTable)
+          : TapIn(),
+      CheckOut(changeCheckOutToCheckIn: this.changeCheckOutToCheckIn)
+    ];
+
     return PageView(
       controller: pageController,
       onPageChanged: (index) {
-        pageChanged(index);
+        _pageChanged(index);
       },
-      children: <Widget>[TimeTable(), CheckIn(), TapIn()],
+      children: views,
     );
   }
 
@@ -34,13 +78,13 @@ class _BaseViewState extends State<BaseView> {
     super.initState();
   }
 
-  void pageChanged(int index) {
+  void _pageChanged(int index) {
     setState(() {
       selectedIndex = index;
     });
   }
 
-  void changeView(int index) {
+  void _changeView(int index) {
     setState(() {
       selectedIndex = index;
       pageController.animateToPage(index,
@@ -60,22 +104,16 @@ class _BaseViewState extends State<BaseView> {
         drawer: Settings(),
         body: buildPageView(),
         bottomNavigationBar: BottomNavigationBar(
-          currentIndex: selectedIndex,
-          backgroundColor: PrimaryColor,
-          selectedItemColor: SecondaryColorLight,
-          unselectedItemColor: TextColor,
-          onTap: (index) {
-            changeView(index);
-          },
-          items: [
-            BottomNavigationBarItem(
-                icon: new Icon(Icons.timer), label: 'Horas'),
-            BottomNavigationBarItem(
-                icon: new Icon(Icons.adjust_outlined), label: 'Check-in'),
-            BottomNavigationBarItem(
-                icon: new Icon(Icons.person_add), label: 'Tap-in')
-          ],
-        ),
+            currentIndex: selectedIndex,
+            backgroundColor: PrimaryColor,
+            selectedItemColor: SecondaryColorLight,
+            unselectedItemColor: TextColor,
+            onTap: (index) {
+              _changeView(index);
+            },
+            items: !iAmCheckedIn
+                ? this.checkedOutNavOptions
+                : this.checkedInNavOptions),
       ),
     );
   }
