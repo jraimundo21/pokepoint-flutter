@@ -3,14 +3,36 @@ class Workplace {
   int idCompany;
   String name;
   String address;
-  String latitude;
-  String longitude;
+  double latitude;
+  double longitude;
 
-  Workplace(this.id, this.idCompany, this.name, this.address, this.latitude,
-      this.longitude);
+  Workplace.stringCoords(int id, int idCompany, String name, String address,
+      String latitude, String longitude) {
+    this.id = id;
+    this.idCompany = idCompany;
+    this.name = name;
+    this.address = address;
+    this.latitude = latitude != null ? double.parse(latitude) : 0;
+    this.longitude = longitude != null ? double.parse(longitude) : 0;
+  }
+
+  Workplace(int id, int idCompany, String name, String address, double latitude,
+      double longitude) {
+    this.id = id;
+    this.idCompany = idCompany;
+    this.name = name;
+    this.address = address;
+    this.latitude = latitude;
+    this.longitude = longitude;
+  }
 
   factory Workplace.fromJson(Map<String, dynamic> json) {
     return Workplace(json['id'], json['idCompany'], json['name'],
+        json['address'], json['latitude'], json['longitude']);
+  }
+
+  factory Workplace.fromJsonStringCoords(Map<String, dynamic> json) {
+    return Workplace.stringCoords(json['id'], json['idCompany'], json['name'],
         json['address'], json['latitude'], json['longitude']);
   }
 

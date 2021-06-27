@@ -4,7 +4,6 @@ import './time_table.dart';
 import './checkin.dart';
 import './checkout.dart';
 import './tapin.dart';
-import './settings.dart';
 import '../views/login.dart';
 import '../utils/http_helper.dart';
 import '../utils/db_helper.dart';
