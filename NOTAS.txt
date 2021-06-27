@@ -45,3 +45,7 @@ List
 -<TimeCard>
 +sync
 }
+
+
+
+https://stackoverflow.com/questions/67230658/google-maps-flutter-doesnt-work-in-release/67244406#67244406

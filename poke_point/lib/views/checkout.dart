@@ -37,7 +37,7 @@ class _CheckOutState extends State<CheckOut> with TickerProviderStateMixin {
           children: [
             Container(
               color: Color(0xFF11443c), //Colors.amber[600],
-              height: 150,
+              height: MediaQuery.of(context).size.height * 0.15, //150 ?
               child: new Text(
                 'Aqui mostrar info da hora de check-in, lugar, tempo passado desde o check-in',
                 style: TextStyle(

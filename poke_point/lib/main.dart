@@ -1,8 +1,5 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import './utils/theme.dart';
-import './views/base.dart';
 import './views/login.dart';
 
 void main() {
@@ -16,7 +13,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'poke-point',
       theme: MyTheme.myCustom,
-      home: Scaffold(
+      home: new Scaffold(
         body: LoginScreen(),
       ),
     );

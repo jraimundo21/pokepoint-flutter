@@ -3,30 +3,18 @@ import 'package:flutter_login/flutter_login.dart';
 import '../utils/theme.dart';
 import 'base.dart';
 import 'package:flutter/widgets.dart';
+import '../models/user.dart';
 
 //  > Flutter Login
 //  package:        flutter_login 2.0.0
 //  manual url:     https://pub.dev/packages/flutter_login
 
-// Test user, apagar
-const users = const {
-  'a@a.a': '12345',
-};
-
 class LoginScreen extends StatelessWidget {
   Duration get loginTime => Duration(milliseconds: 2250);
 
-  Future<String> _authUser(LoginData data) {
-    print('Name: ${data.name}, Password: ${data.password}');
-    return Future.delayed(loginTime).then((_) {
-      if (!users.containsKey(data.name)) {
-        return 'User not exists';
-      }
-      if (users[data.name] != data.password) {
-        return 'Password does not match';
-      }
-      return null;
-    });
+  Future<String> _authUser(LoginData data) async {
+    var loginResult = await User.login(data.name, data.password);
+    return loginResult;
   }
 
   @override

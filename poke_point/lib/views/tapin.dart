@@ -70,7 +70,7 @@ class _TapInState extends State<TapIn> {
           children: [
             Container(
               color: Color(0xFF11443c), //Colors.amber[600],
-              height: 150,
+              height: MediaQuery.of(context).size.height * 0.15, //150 ?
               width: MediaQuery.of(context).size.width,
               child: new Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -80,21 +80,21 @@ class _TapInState extends State<TapIn> {
                     style: TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
-                        fontSize: 37),
+                        fontSize: 35),
                   ),
                   new Text(
                     'Help your colleague check in with',
                     style: TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
-                        fontSize: 18),
+                        fontSize: 17),
                   ),
                   new Text(
                     'QR Code or NFC',
                     style: TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.w500,
-                        fontSize: 26),
+                        fontSize: 25),
                   ),
                   new Container(
                     color: PrimaryColorLight,

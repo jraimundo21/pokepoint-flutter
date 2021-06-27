@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:connectivity/connectivity.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import '../../utils/db_helper.dart';
 import '../../widgets/question_dialog.dart';
@@ -105,7 +104,6 @@ class _GeoFencingState extends State<GeoFencing> {
       double distanceInMeters = await Geolocator()
           .distanceBetween(curPos.latitude, curPos.longitude, lat, lon);
 
-      print(distanceInMeters);
       if (distanceInMeters <= 20 && mounted && !this.isDialogActive) {
         this.isDialogActive = true;
         showDialog(
@@ -193,7 +191,7 @@ class _GeoFencingState extends State<GeoFencing> {
     return new Container(
       child: SizedBox(
         width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height - 290,
+        height: MediaQuery.of(context).size.height * 0.67,
         child: GoogleMap(
           initialCameraPosition: position,
           onMapCreated: (GoogleMapController controller) {

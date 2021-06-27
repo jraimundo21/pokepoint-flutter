@@ -71,21 +71,23 @@ class _CheckInState extends State<CheckIn> {
   @override
   Widget build(BuildContext context) {
     List<DropdownMenuItem> offineOptions = [
-      DropdownMenuItem(child: Text("Manual"), value: 1),
-      DropdownMenuItem(child: Text("QR Code"), value: 2),
-      DropdownMenuItem(child: Text("NFC"), value: 3),
+      // DropdownMenuItem(child: Text("Manual"), value: 1),
+      DropdownMenuItem(child: Text("QR Code"), value: 1), //2
+      // DropdownMenuItem(child: Text("NFC"), value: 3),
     ];
     List<DropdownMenuItem> onlineOptions = [
-      DropdownMenuItem(child: Text("Geofencing"), value: 4),
+      DropdownMenuItem(child: Text("Geofencing"), value: 2), //4
     ];
     onlineOptions.addAll(offineOptions);
     Map<int, Widget> checkInViews = {
-      1: Manual(),
-      2: QRCode(
+      // 1: Manual(),
+      1: QRCode(
+          // 2
           changeCheckInToCheckOut: widget.changeCheckInToCheckOut,
           changeBackToTimeTable: widget.changeBackToTimeTable),
-      3: NFC(),
-      4: GeoFencing(
+      // 3: NFCCheckIn(),
+      2: GeoFencing(
+          // 4
           changeCheckInToCheckOut: widget.changeCheckInToCheckOut,
           changeBackToTimeTable: widget.changeBackToTimeTable),
     };
@@ -96,7 +98,7 @@ class _CheckInState extends State<CheckIn> {
           children: [
             new Container(
               color: PrimaryColor, //Colors.amber[600],
-              height: 150,
+              height: MediaQuery.of(context).size.height * 0.15, //150 ?
               width: MediaQuery.of(context).size.width,
               child: new Column(
                 mainAxisAlignment: MainAxisAlignment.center,

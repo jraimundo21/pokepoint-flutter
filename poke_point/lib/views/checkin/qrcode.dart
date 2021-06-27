@@ -97,42 +97,37 @@ class _QRCodeState extends State<QRCode> {
   }
 
 //
-//      >>  Só para efeitos de
+//      >>  Só para efeitos de DESENVOLVIMENTO
 //        TROCAR A FUNÇÃO com a que está em baixo.
 //
 //
 // TODO Apagar aqui, descomentar a de baixo.
-  Future<void> scanQRCode() async {
-    setState(() {
-      this.qrCodeResult = CustomParser.decodeFromQueryString(
-          'timestamp=${(new DateTime.now().millisecondsSinceEpoch)}&userId=124123&userName=José Bacalhau&workplaceId=1234432&workplaceName=Local De Trabalho 1');
-      startTimerCountDownForReset();
-    });
-  }
-
-  //  "userId": this.userId,
-  //       'userName': this.userName,
-  //       'workplaceId': this.workplaceId,
-  //       'workplaceName': this.workplaceName,
-  //       'timestamp': new DateTime.now().millisecondsSinceEpoch
+  // Future<void> scanQRCode() async {
+  //   setState(() {
+  //     this.qrCodeResult = CustomParser.decodeFromQueryString(
+  //         'timestamp=${(new DateTime.now().millisecondsSinceEpoch)}&userId=124123&userName=José Bacalhau&workplaceId=1234432&workplaceName=Local De Trabalho 1');
+  //     startTimerCountDownForReset();
+  //   });
+  // }
 
 ////////////////////////////////////////////////////// NÃO APAGAR ESTA FUNçÃO
-//   Future<void> scanQRCode() async {
-//     try {
-//       final qrCode = await FlutterBarcodeScanner.scanBarcode(
-//           '#ff6666', 'Cancel', true, ScanMode.QR);
+  ///                                                     Substitui a anterior
+  Future<void> scanQRCode() async {
+    try {
+      final qrCode = await FlutterBarcodeScanner.scanBarcode(
+          '#ff6666', 'Cancel', true, ScanMode.QR);
 
-//       if (!mounted) return;
+      if (!mounted) return;
 
-//       setState(() {
-//         this.qrCodeResult = CustomParser.decodeFromQueryString(qrCode);
+      setState(() {
+        this.qrCodeResult = CustomParser.decodeFromQueryString(qrCode);
 
-//       startTimerCountDownForReset();
-//       });
-//     } catch (e) {
-//       this.qrCodeResult = {};
-//     }
-//   }
+        startTimerCountDownForReset();
+      });
+    } catch (e) {
+      this.qrCodeResult = {};
+    }
+  }
 
   Widget onScanButtonClick() {
     return ElevatedButton(

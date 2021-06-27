@@ -9,16 +9,24 @@ class TimeTable extends StatelessWidget {
         child: Column(
           children: [
             Container(
-              color: Color(0xFF11443c), //Colors.amber[600],
-              height: 150,
-            ),
+                color: Color(0xFF11443c), //Colors.amber[600],
+                height: MediaQuery.of(context).size.height * 0.15, //150 ?,
+                width: MediaQuery.of(context).size.width,
+                child: Text(
+                  'Timetable',
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 30),
+                )),
             Container(
-              child: new Text(
+              height: MediaQuery.of(context).size.height * 0.67, //150 ?,
+              child: Text(
                 'Timetable',
                 style: TextStyle(
                     color: Colors.black,
                     fontWeight: FontWeight.bold,
-                    fontSize: 40),
+                    fontSize: 30),
               ),
             )
           ],
