@@ -4,9 +4,17 @@ class CheckIn {
   int idCheckInType;
   int idTimecard;
   String timestamp;
+  bool offline;
 
-  CheckIn(this.id, this.idWorkplace, this.idCheckInType, this.idTimecard,
-      this.timestamp);
+  CheckIn(int id, int idWorkplace, int idCheckInType, int idTimecard,
+      String timestamp,
+      [int offline = 0]) {
+    this.id = id;
+    this.idWorkplace = idWorkplace;
+    this.idCheckInType = idCheckInType;
+    this.idTimecard = idTimecard;
+    this.offline = offline == 0 ? false : true;
+  }
 
   factory CheckIn.fromJson(Map<String, dynamic> json) {
     return CheckIn(json['id'], json['idWorkplace'], json['idCheckInType'],
@@ -19,7 +27,7 @@ class CheckIn {
       'idWorkplace': idWorkplace,
       'idCheckInType': idCheckInType,
       'idTimecard': idTimecard,
-      'timestamp': timestamp
+      'timestamp': timestamp,
     };
   }
 }

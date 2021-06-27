@@ -7,8 +7,14 @@ class Timecard {
   int worktime;
   CheckIn checkIn;
   CheckOut checkOut;
+  bool offline;
 
-  Timecard(this.id, this.idEmployee, this.worktime);
+  Timecard(int id, int idEmployee, int worktime, [int offline = 0]) {
+    this.id = id;
+    this.idEmployee = idEmployee;
+    this.worktime = worktime;
+    this.offline = offline == 0 ? false : true;
+  }
 
   factory Timecard.fromJson(Map<String, dynamic> json) {
     return Timecard(json['id'], json['employee'], json['time_work']);

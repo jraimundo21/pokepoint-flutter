@@ -35,11 +35,11 @@ class DbHelper {
         database.execute(
             'CREATE TABLE workplace(id INTEGER PRIMARY KEY, idCompany INTEGER, name TEXT, latitude REAL, longitude REAL, address TEXT, FOREIGN KEY(idCompany) REFERENCES company(id))');
         database.execute(
-            'CREATE TABLE timecard(id INTEGER PRIMARY KEY, idEmployee INTEGER, worktime INTEGER, FOREIGN KEY(idEmployee) REFERENCES employee(id))');
+            'CREATE TABLE timecard(id INTEGER PRIMARY KEY, idEmployee INTEGER, worktime INTEGER, offline INTEGER DEFAULT 0, FOREIGN KEY(idEmployee) REFERENCES employee(id))');
         database.execute(
-            'CREATE TABLE checkin(id INTEGER PRIMARY KEY, idCheckintype INTEGER, idWorkplace INTEGER, idTimecard INTEGER, timestamp TEXT, FOREIGN KEY(idTimecard) REFERENCES company(id))');
+            'CREATE TABLE checkin(id INTEGER PRIMARY KEY, idCheckintype INTEGER, idWorkplace INTEGER, idTimecard INTEGER, timestamp TEXT, offline INTEGER DEFAULT 0, FOREIGN KEY(idTimecard) REFERENCES company(id))');
         database.execute(
-            'CREATE TABLE checkout(id INTEGER PRIMARY KEY, idWorkplace INTEGER, idTimecard INTEGER, timestamp TEXT, FOREIGN KEY(idTimecard) REFERENCES company(id))');
+            'CREATE TABLE checkout(id INTEGER PRIMARY KEY, idWorkplace INTEGER, idTimecard INTEGER, timestamp TEXT, offline INTEGER DEFAULT 0, FOREIGN KEY(idTimecard) REFERENCES company(id))');
       }, version: version);
     }
     return db;
@@ -115,9 +115,10 @@ class DbHelper {
     await cacheTimecards(employeeData['timeCards']);
   }
 
-  Future<CheckIn> getCheckIn(idTimecard) async {
+  Future<CheckIn> getCheckIn(int idTimecard, [bool last = false]) async {
     final List<Map<String, dynamic>> result = await db
         .rawQuery('SELECT * FROM checkin WHERE idTimecard=?', [idTimecard]);
+    if (result.isEmpty) return null;
     CheckIn checkIn = new CheckIn(
       result[0]['id'],
       result[0]['idWorkplace'],
@@ -140,6 +141,7 @@ class DbHelper {
   Future<CheckOut> getCheckOut(idTimecard) async {
     final List<Map<String, dynamic>> result = await db
         .rawQuery('SELECT * FROM checkout WHERE idTimecard=?', [idTimecard]);
+    if (result.isEmpty) return null;
     CheckOut checkOut = new CheckOut(
       result[0]['id'],
       result[0]['idWorkplace'],
