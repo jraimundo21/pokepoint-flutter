@@ -1,8 +1,6 @@
-import 'dart:async';
 import 'dart:io';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:sqflite/sqflite.dart';
 import 'db_helper.dart';
 
 class HttpHelper {
@@ -15,6 +13,34 @@ class HttpHelper {
 
     final response = await http.get(
       Uri.parse(baseUrl + 'employees/' + user.id.toString() + '/'),
+      headers: {
+        HttpHeaders.authorizationHeader: user.basicAuth,
+      },
+    );
+    return json.decode(response.body);
+  }
+
+  static getCompany(id) async {
+    DbHelper dbHelper = new DbHelper();
+    await dbHelper.openDb();
+    var user = await dbHelper.getUser();
+
+    final response = await http.get(
+      Uri.parse(baseUrl + 'companies/' + id.toString() + '/'),
+      headers: {
+        HttpHeaders.authorizationHeader: user.basicAuth,
+      },
+    );
+    return json.decode(response.body);
+  }
+
+  static getWorkplaces(idCompany) async {
+    DbHelper dbHelper = new DbHelper();
+    await dbHelper.openDb();
+    var user = await dbHelper.getUser();
+
+    final response = await http.get(
+      Uri.parse(baseUrl + 'companies/' + idCompany.toString() + '/workplaces/'),
       headers: {
         HttpHeaders.authorizationHeader: user.basicAuth,
       },
