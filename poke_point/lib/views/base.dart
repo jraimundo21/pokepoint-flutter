@@ -6,6 +6,8 @@ import './checkout.dart';
 import './tapin.dart';
 import './settings.dart';
 import '../views/login.dart';
+import '../utils/http_helper.dart';
+import '../utils/db_helper.dart';
 
 class BaseView extends StatefulWidget {
   BaseView({Key key}) : super(key: key);
@@ -122,20 +124,38 @@ class _BaseViewState extends State<BaseView> {
                 ),
               ),
               new Container(
-                  child: ListTile(
-                title: new Text(
-                  'Logout',
-                  style: TextStyle(
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18),
+                child: ListTile(
+                  title: new Text(
+                    'Logout',
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18),
+                  ),
+                  onTap: () => {
+                    Navigator.of(context).pushReplacement(MaterialPageRoute(
+                      builder: (context) => LoginScreen(),
+                    ))
+                  }, //0 é o índice da view que se pretende selecionar
                 ),
-                onTap: () => {
-                  Navigator.of(context).pushReplacement(MaterialPageRoute(
-                    builder: (context) => LoginScreen(),
-                  ))
-                }, //0 é o índice da view que se pretende selecionar
-              )),
+              ),
+              new Container(
+                child: ListTile(
+                  title: new Text(
+                    'Botão para testar',
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18),
+                  ),
+                  onTap: () async {
+                    // var a = await HttpHelper.getEmployee();
+                    DbHelper dbHelper = new DbHelper();
+                    var c = dbHelper.cacheData();
+                    var b = 2;
+                  }, //0 é o índice da view que se pretende selecionar
+                ),
+              )
             ],
           ),
         ),
