@@ -24,6 +24,7 @@ dependencies:
   nfc_in_flutter: ^2.0.5
   flutter_barcode_scanner: ^1.0.1
   crypt: ^3.0.1
+  intl: ^0.15.7
   
 dev_dependencies:
   flutter_test:
