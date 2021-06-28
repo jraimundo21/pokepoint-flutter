@@ -115,6 +115,39 @@ class DbHelper {
     await cacheTimecards(employeeData['timeCards']);
   }
 
+  getLastCheckIn() async {
+    List<Timecard> timecards = await getTimecards();
+    CheckIn lastCheckIn = timecards[0].checkIn;
+    timecards.forEach((timecard) {
+      if (timecard.checkIn != null && timecard.checkIn.timestamp != null) {
+        if (timecard.checkIn.timestamp.compareTo(lastCheckIn.timestamp) > 0)
+          lastCheckIn = timecard.checkIn;
+      }
+    });
+    return lastCheckIn;
+  }
+
+  Future<int> getSmallestCheckInId() async {
+    final List<Map<String, dynamic>> result =
+        await db.rawQuery('SELECT id FROM checkin order by id ASC LIMIT 1');
+    if (result.isEmpty) return null;
+    return result[0]['id'];
+  }
+
+  Future<int> getSmallestCheckOutId() async {
+    final List<Map<String, dynamic>> result =
+        await db.rawQuery('SELECT id FROM checkout order by id ASC LIMIT 1');
+    if (result.isEmpty) return null;
+    return result[0]['id'];
+  }
+
+  Future<int> getSmallestTimecardId() async {
+    final List<Map<String, dynamic>> result =
+        await db.rawQuery('SELECT id FROM timecard order by id ASC LIMIT 1');
+    if (result.isEmpty) return null;
+    return result[0]['id'];
+  }
+
   Future<CheckIn> getCheckIn(int idTimecard, [bool last = false]) async {
     final List<Map<String, dynamic>> result = await db
         .rawQuery('SELECT * FROM checkin WHERE idTimecard=?', [idTimecard]);
@@ -125,6 +158,7 @@ class DbHelper {
       result[0]['idCheckintype'],
       result[0]['idTimecard'],
       result[0]['timestamp'],
+      result[0]['offline'],
     );
     return checkIn;
   }
@@ -147,6 +181,7 @@ class DbHelper {
       result[0]['idWorkplace'],
       result[0]['idTimecard'],
       result[0]['timestamp'],
+      result[0]['offline'],
     );
     return checkOut;
   }
@@ -161,10 +196,8 @@ class DbHelper {
   }
 
   Future<List<Workplace>> getWorkplaces() async {
-    final List<Map<String, dynamic>> result = await db
-        // .rawQuery('SELECT * FROM workplace WHERE idCompany=?', [idCompany]);
-        .rawQuery(
-            'SELECT w.id, w.idCompany, w.name, w.address, w.latitude, w.longitude FROM workplace w JOIN employee e ON e.idCompany = w.idCompany JOIN current c ON c.idUser = e.id');
+    final List<Map<String, dynamic>> result = await db.rawQuery(
+        'SELECT w.id, w.idCompany, w.name, w.address, w.latitude, w.longitude FROM workplace w JOIN employee e ON e.idCompany = w.idCompany JOIN current c ON c.idUser = e.id');
     List<Workplace> workplaces = List.generate(result.length, (i) {
       return new Workplace(
         result[i]['id'],
@@ -176,6 +209,21 @@ class DbHelper {
       );
     });
     return workplaces;
+  }
+
+  Future<Workplace> getWorkplace(int idWorkplace) async {
+    final List<Map<String, dynamic>> result =
+        await db.rawQuery('SELECT * FROM workplace WHERE id=?', [idWorkplace]);
+    if (result.isEmpty) return null;
+    Workplace workplace = new Workplace(
+      result[0]['id'],
+      result[0]['idCompany'],
+      result[0]['name'],
+      result[0]['address'],
+      result[0]['latitude'],
+      result[0]['longitude'],
+    );
+    return workplace;
   }
 
   Future<int> insertWorkplace(Workplace workplace) async {
@@ -212,12 +260,13 @@ class DbHelper {
 
   Future<List<Timecard>> getTimecards() async {
     final List<Map<String, dynamic>> result = await db.rawQuery(
-        'SELECT tc.id, tc.idEmployee, tc.worktime FROM timecard tc JOIN current c ON tc.idEmployee = c.idUser');
+        'SELECT tc.id, tc.idEmployee, tc.worktime, tc.offline FROM timecard tc JOIN current c ON tc.idEmployee = c.idUser');
     List<Timecard> timecards = List.generate(result.length, (i) {
       return new Timecard(
         result[i]['id'],
         result[i]['idEmployee'],
         result[i]['worktime'],
+        result[i]['offline'],
       );
     });
     for (var i = 0; i < timecards.length; i++) {

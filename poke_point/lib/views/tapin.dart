@@ -3,6 +3,10 @@ import 'package:poke_point/utils/theme.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'dart:async';
 import '../utils/custom_parser.dart';
+import '../utils/db_helper.dart';
+import '../models/employee.dart';
+import '../models/checkin.dart';
+import '../models/workplace.dart';
 
 class TapIn extends StatefulWidget {
   TapIn();
@@ -14,18 +18,27 @@ class _TapInState extends State<TapIn> {
   final int refreshRate = 5;
   int currentSecond;
   Timer timer;
-
-  // TODO Replace this values dinamically
-  String userId = '123123';
-  String userName = 'José Bacalhau';
-  String workplaceId = '123123';
-  String workplaceName = 'Obra do Zé';
+  CheckIn lastCheckIn;
+  Employee employee;
+  Workplace workplace;
   String credentialDataToSend;
+
+  void prepareDataForTapIn() async {
+    DbHelper dbHelper = new DbHelper();
+    await dbHelper.openDb();
+
+    employee = await dbHelper.getEmployee();
+    lastCheckIn = await dbHelper.getLastCheckIn();
+    workplace = await dbHelper.getWorkplace(lastCheckIn.idWorkplace);
+
+    renewQRCode();
+  }
 
   @override
   void initState() {
+    prepareDataForTapIn();
     currentSecond = refreshRate;
-    renewQRCode();
+
     super.initState();
     timer = Timer.periodic(
         Duration(seconds: 1), (Timer t) => updateCountDownTimer());
@@ -38,15 +51,16 @@ class _TapInState extends State<TapIn> {
   }
 
   void renewQRCode() {
-    this.setState(() {
-      this.credentialDataToSend = CustomParser.encodeToQueryString({
-        "userId": this.userId,
-        'userName': this.userName,
-        'workplaceId': this.workplaceId,
-        'workplaceName': this.workplaceName,
-        'timestamp': new DateTime.now().millisecondsSinceEpoch
+    if (mounted)
+      this.setState(() {
+        this.credentialDataToSend = CustomParser.encodeToQueryString({
+          "employeeId": this.employee.id,
+          'employeeName': this.employee.name,
+          'workplaceId': this.workplace.id,
+          'workplaceName': this.workplace.name,
+          'timestamp': new DateTime.now().millisecondsSinceEpoch
+        });
       });
-    });
   }
 
   void updateCountDownTimer() {
@@ -55,10 +69,12 @@ class _TapInState extends State<TapIn> {
         --currentSecond;
       });
     } else {
-      this.setState(() {
-        currentSecond = refreshRate;
-        renewQRCode();
-      });
+      if (mounted) {
+        this.setState(() {
+          currentSecond = refreshRate;
+          renewQRCode();
+        });
+      }
     }
   }
 
@@ -90,7 +106,7 @@ class _TapInState extends State<TapIn> {
                         fontSize: 17),
                   ),
                   new Text(
-                    'QR Code or NFC',
+                    'QR Code', // or NFC',
                     style: TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.w500,
@@ -130,21 +146,28 @@ class _TapInState extends State<TapIn> {
             ),
             new Container(
                 child: new Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                QrImage(
-                  data: credentialDataToSend,
-                  version: QrVersions.auto,
-                  // size: 320,
-                  gapless: false,
-                  embeddedImage: AssetImage('assets/images/poke_point.png'),
-                  embeddedImageStyle: QrEmbeddedImageStyle(
-                    size: Size(80, 80),
-                  ),
-                ),
+                credentialDataToSend != null
+                    ? QrImage(
+                        data: credentialDataToSend,
+                        version: QrVersions.auto,
+                        // size: 320,
+                        gapless: false,
+                        embeddedImage:
+                            AssetImage('assets/images/poke_point.png'),
+                        embeddedImageStyle: QrEmbeddedImageStyle(
+                          size: Size(80, 80),
+                        ),
+                      )
+                    : new Container(),
                 new Container(
+                    width: MediaQuery.of(context).size.width,
+                    height: 70,
                     color: Colors.white,
                     child: new Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         new Text(
@@ -155,7 +178,7 @@ class _TapInState extends State<TapIn> {
                               fontSize: 20),
                         ),
                         new Text(
-                          'Let your colleague scan this QR Code.\nOr, alternatively, turn on your NFC and put your mobiles together.',
+                          'Let your colleague scan this QR Code.', //\nOr, alternatively, turn on your NFC and put your mobiles together.',
                           style: TextStyle(
                               color: Colors.black,
                               fontWeight: FontWeight.bold,

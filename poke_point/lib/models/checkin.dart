@@ -13,6 +13,7 @@ class CheckIn {
     this.idWorkplace = idWorkplace;
     this.idCheckInType = idCheckInType;
     this.idTimecard = idTimecard;
+    this.timestamp = timestamp;
     this.offline = offline == 0 ? false : true;
   }
 
@@ -28,6 +29,7 @@ class CheckIn {
       'idCheckInType': idCheckInType,
       'idTimecard': idTimecard,
       'timestamp': timestamp,
+      'offline': offline ? 1 : 0
     };
   }
 }

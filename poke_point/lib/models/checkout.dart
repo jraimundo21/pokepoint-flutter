@@ -10,6 +10,7 @@ class CheckOut {
     this.id = id;
     this.idWorkplace = idWorkplace;
     this.idTimecard = idTimecard;
+    this.timestamp = timestamp;
     this.offline = offline == 0 ? false : true;
   }
 
@@ -23,7 +24,8 @@ class CheckOut {
       'id': id,
       'idWorkplace': idWorkplace,
       'idTimecard': idTimecard,
-      'timestamp': timestamp
+      'timestamp': timestamp,
+      'offline': offline ? 1 : 0
     };
   }
 }

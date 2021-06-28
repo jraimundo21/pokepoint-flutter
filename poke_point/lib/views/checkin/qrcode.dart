@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart'; //não apagar
 import 'package:poke_point/utils/custom_parser.dart';
-import 'package:poke_point/utils/theme.dart';
+import 'package:poke_point/models/timecard.dart';
 
 class QRCode extends StatefulWidget {
   QRCode({Key key, this.changeCheckInToCheckOut, this.changeBackToTimeTable})
@@ -19,12 +19,12 @@ class QRCode extends StatefulWidget {
 class _QRCodeState extends State<QRCode> {
   Map qrCodeResult = {};
   Timer timer;
-  final int qrCodeLifetime_inSeconds = 20; // 20 seconds
+  final int qrCodeLifetimeInSeconds = 20; // 20 seconds
   int currentSecond;
 
   @override
   void initState() {
-    currentSecond = this.qrCodeLifetime_inSeconds;
+    currentSecond = this.qrCodeLifetimeInSeconds;
     super.initState();
   }
 
@@ -82,11 +82,11 @@ class _QRCodeState extends State<QRCode> {
         this.qrCodeResult.containsKey('timestamp')) {
       int scannedTimestamp = int.parse(this.qrCodeResult['timestamp']);
       int now = new DateTime.now().millisecondsSinceEpoch;
-      if (now - scannedTimestamp > this.qrCodeLifetime_inSeconds * 1000) {
+      if (now - scannedTimestamp > this.qrCodeLifetimeInSeconds * 1000) {
         timer?.cancel();
         this.setState(() {
           this.qrCodeResult = {};
-          currentSecond = this.qrCodeLifetime_inSeconds;
+          currentSecond = this.qrCodeLifetimeInSeconds;
         });
       } else {
         this.setState(() {
@@ -102,32 +102,31 @@ class _QRCodeState extends State<QRCode> {
 //
 //
 // TODO Apagar aqui, descomentar a de baixo.
-  // Future<void> scanQRCode() async {
-  //   setState(() {
-  //     this.qrCodeResult = CustomParser.decodeFromQueryString(
-  //         'timestamp=${(new DateTime.now().millisecondsSinceEpoch)}&userId=124123&userName=José Bacalhau&workplaceId=1234432&workplaceName=Local De Trabalho 1');
-  //     startTimerCountDownForReset();
-  //   });
-  // }
+  Future<void> scanQRCode() async {
+    setState(() {
+      this.qrCodeResult = CustomParser.decodeFromQueryString(
+          'timestamp=${(new DateTime.now().millisecondsSinceEpoch)}&userId=124123&userName=José Bacalhau&workplaceId=1234432&workplaceName=Local De Trabalho 1');
+      startTimerCountDownForReset();
+    });
+  }
 
 ////////////////////////////////////////////////////// NÃO APAGAR ESTA FUNçÃO
   ///                                                     Substitui a anterior
-  Future<void> scanQRCode() async {
-    try {
-      final qrCode = await FlutterBarcodeScanner.scanBarcode(
-          '#ff6666', 'Cancel', true, ScanMode.QR);
+  // Future<void> scanQRCode() async {
+  //   try {
+  //     final qrCode = await FlutterBarcodeScanner.scanBarcode(
+  //         '#ff6666', 'Cancel', true, ScanMode.QR);
 
-      if (!mounted) return;
+  //     if (!mounted) return;
 
-      setState(() {
-        this.qrCodeResult = CustomParser.decodeFromQueryString(qrCode);
-
-        startTimerCountDownForReset();
-      });
-    } catch (e) {
-      this.qrCodeResult = {};
-    }
-  }
+  //     setState(() {
+  //       this.qrCodeResult = CustomParser.decodeFromQueryString(qrCode);
+  //       startTimerCountDownForReset();
+  //     });
+  //   } catch (e) {
+  //     this.qrCodeResult = {};
+  //   }
+  // }
 
   Widget onScanButtonClick() {
     return ElevatedButton(
@@ -259,7 +258,12 @@ class _QRCodeState extends State<QRCode> {
 
   Future checkIn() async {
     // Checked-in succefully
-    // Call method to make check-in, probably it can be some logic in the check-in model
+
+    // TODO APAGAR ESTE COMANDO
+    this.qrCodeResult = CustomParser.decodeFromQueryString(
+        "employeeId=7&employeeName=a&workplaceId=1&workplaceName=posto1&timestamp=1624839729923");
+
+    Timecard.registerByTapIn(this.qrCodeResult);
 
     // Callback to change navigation options
     widget.changeCheckInToCheckOut();

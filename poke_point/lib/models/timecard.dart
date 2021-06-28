@@ -1,5 +1,6 @@
-import 'package:poke_point/models/checkin.dart';
-import 'package:poke_point/models/checkout.dart';
+import '../models/checkin.dart';
+import '../models/checkout.dart';
+import '../utils/db_helper.dart';
 
 class Timecard {
   int id;
@@ -21,7 +22,12 @@ class Timecard {
   }
 
   Map<String, dynamic> toMap() {
-    return {'id': id, 'idEmployee': idEmployee, 'worktime': worktime};
+    return {
+      'id': id,
+      'idEmployee': idEmployee,
+      'worktime': worktime,
+      'offline': offline ? 1 : 0
+    };
   }
 
   void setCheckIn(CheckIn checkIn) {
@@ -30,5 +36,34 @@ class Timecard {
 
   void setCheckOut(CheckOut checkOut) {
     this.checkOut = checkOut;
+  }
+
+  static registerCheckIn() {}
+
+  static registerOffline() {}
+
+  static registerOnline() {}
+
+  static registerByTapIn(Map colleagueInfo) async {
+    DbHelper dbHelper = new DbHelper();
+    await dbHelper.openDb();
+
+    int smallestCheckInId = await dbHelper.getSmallestCheckInId();
+    int smallestTimecardId = await dbHelper.getSmallestTimecardId();
+    int idEmployee = await dbHelper.getCurrentEmployeeId();
+
+    Timecard timecard = new Timecard(
+        smallestTimecardId > 0 ? -1 : smallestTimecardId - 1, idEmployee, 0, 1);
+
+    CheckIn checkIn = new CheckIn(
+        smallestCheckInId > 0 ? -1 : smallestCheckInId - 1,
+        int.parse(colleagueInfo['workplaceId']),
+        2,
+        timecard.id,
+        ('${new DateTime.now().toIso8601String()}Z'),
+        1);
+
+    dbHelper.insertTimecard(timecard);
+    dbHelper.insertCheckIn(checkIn);
   }
 }

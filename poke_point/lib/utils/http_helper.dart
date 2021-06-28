@@ -61,4 +61,6 @@ class HttpHelper {
     );
     return response;
   }
+
+  static checkOut() async {}
 }
