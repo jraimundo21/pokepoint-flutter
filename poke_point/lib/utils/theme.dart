@@ -20,6 +20,7 @@ class MyTheme {
     final ThemeData base = ThemeData.light();
 
     return base.copyWith(
+      appBarTheme: AppBarTheme(brightness: Brightness.dark),
       accentColor: SecondaryColor,
       accentColorBrightness: Brightness.dark,
       primaryColor: PrimaryColor,
