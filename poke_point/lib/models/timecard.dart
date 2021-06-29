@@ -65,17 +65,6 @@ class Timecard {
 
     timecard.setCheckIn(checkIn);
     dbHelper.insertTimecard(timecard);
-
-    var a = 9;
-
-========================================
-========================================
-========================================
-========================================
-
-    continuar AQUI 
-    post checkin nao estava a afuncionar. Ver com a edna
-
   }
 
   static registerByTapIn(Map colleagueInfo) async {
