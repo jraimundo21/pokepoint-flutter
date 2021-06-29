@@ -9,7 +9,7 @@
    <application
         android:usesCleartextTraffic="true"
         android:label="poke_point"
-        android:icon="assets/images/poke_point_transparent_onlylogo.png">
+        android:icon="@mipmap/ic_launcher">
         <meta-data android:name="com.google.android.geo.API_KEY" android:value="AIzaSyBJjuvSoeYeFuXmqp55SmxGbi2FvyRXMNY"/>
         <activity
             android:name=".MainActivity"

@@ -65,6 +65,8 @@ class Timecard {
 
     timecard.setCheckIn(checkIn);
     dbHelper.insertTimecard(timecard);
+
+    var a = 9;
   }
 
   static registerByTapIn(Map colleagueInfo) async {
