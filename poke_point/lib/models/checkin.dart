@@ -18,8 +18,10 @@ class CheckIn {
   }
 
   factory CheckIn.fromJson(Map<String, dynamic> json) {
-    return CheckIn(json['id'], json['idWorkplace'], json['idCheckInType'],
-        json['idTimecard'], json['timestamp']);
+    return json == null
+        ? json
+        : CheckIn(json['id'], json['idWorkplace'], json['idCheckInType'],
+            json['idTimecard'], json['timestamp']);
   }
 
   Map<String, dynamic> toMap() {

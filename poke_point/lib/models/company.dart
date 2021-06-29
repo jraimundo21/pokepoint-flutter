@@ -9,8 +9,10 @@ class Company {
   Company(this.id, this.name, this.nif, this.address, this.email, this.phone);
 
   factory Company.fromJson(Map<String, dynamic> json) {
-    return Company(json['id'], json['name'], json['nif'], json['address'],
-        json['email'], json['phone']);
+    return json == null
+        ? json
+        : Company(json['id'], json['name'], json['nif'], json['address'],
+            json['email'], json['phone']);
   }
 
   Map<String, dynamic> toMap() {

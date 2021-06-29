@@ -27,9 +27,7 @@ class _TimeTableState extends State<TimeTable> {
     company = await dbHelper.getCompany();
     employee = await dbHelper.getEmployee();
 
-    setState(() {
-      // just waiting for data to load
-    });
+    if (mounted) setState(() {});
   }
 
   @override

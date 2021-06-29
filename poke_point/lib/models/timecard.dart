@@ -1,6 +1,7 @@
 import '../models/checkin.dart';
 import '../models/checkout.dart';
 import '../utils/db_helper.dart';
+import '../utils/http_helper.dart';
 
 class Timecard {
   int id;
@@ -18,7 +19,9 @@ class Timecard {
   }
 
   factory Timecard.fromJson(Map<String, dynamic> json) {
-    return Timecard(json['id'], json['employee'], json['time_work']);
+    return json == null
+        ? json
+        : Timecard(json['id'], json['employee'], json['time_work']);
   }
 
   Map<String, dynamic> toMap() {
@@ -42,7 +45,38 @@ class Timecard {
 
   static registerOffline() {}
 
-  static registerOnline() {}
+  static registerOnline(int idWorkplace) async {
+// Registar este check in
+    DbHelper dbHelper = new DbHelper();
+    await dbHelper.openDb();
+
+    int employeeId = await dbHelper.getCurrentEmployeeId();
+
+    Timecard timecard = Timecard.fromJson(await HttpHelper.post(
+        'employees/$employeeId/timecards/', {"employee": employeeId}));
+
+    CheckIn checkIn = CheckIn.fromJson(
+        await HttpHelper.post('employees/$employeeId/checkins/', {
+      "workplace": idWorkplace,
+      "checkInType": 3,
+      "timeCard": timecard.id,
+      "timestamp": "2021-06-26T22:10:19Z"
+    }));
+
+    timecard.setCheckIn(checkIn);
+    dbHelper.insertTimecard(timecard);
+
+    var a = 9;
+
+========================================
+========================================
+========================================
+========================================
+
+    continuar AQUI 
+    post checkin nao estava a afuncionar. Ver com a edna
+
+  }
 
   static registerByTapIn(Map colleagueInfo) async {
     DbHelper dbHelper = new DbHelper();

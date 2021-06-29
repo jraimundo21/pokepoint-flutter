@@ -27,13 +27,17 @@ class Workplace {
   }
 
   factory Workplace.fromJson(Map<String, dynamic> json) {
-    return Workplace(json['id'], json['idCompany'], json['name'],
-        json['address'], json['latitude'], json['longitude']);
+    return json == null
+        ? json
+        : Workplace(json['id'], json['idCompany'], json['name'],
+            json['address'], json['latitude'], json['longitude']);
   }
 
   factory Workplace.fromJsonStringCoords(Map<String, dynamic> json) {
-    return Workplace.stringCoords(json['id'], json['idCompany'], json['name'],
-        json['address'], json['latitude'], json['longitude']);
+    return json == null
+        ? json
+        : Workplace.stringCoords(json['id'], json['idCompany'], json['name'],
+            json['address'], json['latitude'], json['longitude']);
   }
 
   Map<String, dynamic> toMap() {

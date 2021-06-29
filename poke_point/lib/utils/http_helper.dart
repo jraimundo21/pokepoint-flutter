@@ -62,5 +62,27 @@ class HttpHelper {
     return response;
   }
 
+  static Future<Map<String, dynamic>> post(
+      String resource, Map<String, dynamic> json) async {
+    DbHelper dbHelper = new DbHelper();
+    await dbHelper.openDb();
+    var user = await dbHelper.getUser();
+
+    final dynamic response = await http.post(
+      Uri.parse(baseUrl + resource),
+      body: jsonEncode(json),
+      headers: {
+        HttpHeaders.authorizationHeader: user.basicAuth,
+        "content-type": "application/json",
+        "accept": "application/json",
+      },
+    );
+    if (response.statusCode == 201 || response.statusCode == 200) {
+      return jsonDecode(response.body);
+    } else {
+      return null;
+    }
+  }
+
   static checkOut() async {}
 }

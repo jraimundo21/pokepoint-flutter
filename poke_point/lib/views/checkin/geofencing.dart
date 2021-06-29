@@ -5,6 +5,8 @@ import 'package:fluttertoast/fluttertoast.dart';
 import '../../utils/db_helper.dart';
 import '../../widgets/question_dialog.dart';
 import 'dart:async';
+import '../../models/workplace.dart';
+import '../../models/timecard.dart';
 
 class GeoFencing extends StatefulWidget {
   GeoFencing(
@@ -25,8 +27,10 @@ class _GeoFencingState extends State<GeoFencing> {
   bool isDialogActive = false;
   double zoom = 18;
   CameraPosition position;
+  DbHelper dbHelper;
+  List<Workplace> workplaces;
+  int idCheckInWorkplace;
 
-  DbHelper helper;
   List<Marker> markers = [];
   List<Marker> savedLocations = [];
   Timer timer;
@@ -34,13 +38,12 @@ class _GeoFencingState extends State<GeoFencing> {
 
   @override
   void initState() {
+    _loadWorkplaces();
     super.initState();
-    helper = DbHelper();
     this.position = CameraPosition(
       target: LatLng(38.524762126586864, -8.8921310831539724),
       zoom: this.zoom,
     );
-    _getMarkers();
     timer = Timer.periodic(
       Duration(seconds: 1),
       (Timer t) => {
@@ -59,21 +62,21 @@ class _GeoFencingState extends State<GeoFencing> {
     super.dispose();
   }
 
-  Future _getMarkers() async {
-    addMarker(Position(latitude: 38.524267, longitude: -8.906476),
-        'myid'.toString(), 'My Place');
+  void _loadWorkplaces() async {
+    dbHelper = new DbHelper();
+    await dbHelper.openDb();
+    workplaces = await dbHelper.getWorkplaces();
+    _loadMarkersToMap();
+  }
+
+  Future _loadMarkersToMap() async {
+    for (Workplace wp in workplaces) {
+      addMarker(Position(latitude: wp.latitude, longitude: wp.longitude),
+          wp.id.toString(), wp.name);
+    }
     setState(() {
       markers = markers;
     });
-
-// USAR ISTO PARA CARREGAR OS LOCAIS DE TRABALHO
-    // for (Place p in _places) {
-    //   addMarker(
-    //       Position(latitude: p.lat, longitude: p.lon), p.id.toString(), p.name);
-    // }
-    // setState(() {
-    //   markers = markers;
-    // });
   }
 
   void addMarker(Position pos, String markerId, String markerTitle) {
@@ -114,6 +117,7 @@ class _GeoFencingState extends State<GeoFencing> {
               yesCallback: checkIn,
               noCallback: dontCheckIn,
             );
+            idCheckInWorkplace = int.parse(marker.markerId.value);
             return askToCheckInDialog;
           },
         );
@@ -122,18 +126,19 @@ class _GeoFencingState extends State<GeoFencing> {
   }
 
   Future checkIn() async {
-    // Checked-in succefully
-    // Call method to make check-in, probably it can be some logic in the check-in model
+    String checkInResult = await Timecard.registerOnline(idCheckInWorkplace);
 
     // Callback to change navigation options
-    widget.changeCheckInToCheckOut();
+    if (checkInResult == null) widget.changeCheckInToCheckOut();
 
     Fluttertoast.showToast(
-        msg: "You have checked-in successfully",
+        msg: checkInResult == null
+            ? "You have checked-in successfully"
+            : "Failed check-in. Try again later.",
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.CENTER,
         timeInSecForIosWeb: 5,
-        backgroundColor: Colors.red,
+        backgroundColor: Colors.yellow[700],
         textColor: Colors.white,
         fontSize: 20.0);
   }

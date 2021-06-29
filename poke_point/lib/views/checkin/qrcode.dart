@@ -263,17 +263,19 @@ class _QRCodeState extends State<QRCode> {
     this.qrCodeResult = CustomParser.decodeFromQueryString(
         "employeeId=7&employeeName=a&workplaceId=1&workplaceName=posto1&timestamp=1624839729923");
 
-    Timecard.registerByTapIn(this.qrCodeResult);
+    String checkInResult = await Timecard.registerByTapIn(this.qrCodeResult);
 
     // Callback to change navigation options
-    widget.changeCheckInToCheckOut();
+    if (checkInResult == null) widget.changeCheckInToCheckOut();
 
     Fluttertoast.showToast(
-        msg: "You have checked-in successfully",
+        msg: checkInResult == null
+            ? "You have checked-in successfully"
+            : "Failed check-in. Try again later.",
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.CENTER,
         timeInSecForIosWeb: 5,
-        backgroundColor: Colors.red,
+        backgroundColor: Colors.yellow[700],
         textColor: Colors.white,
         fontSize: 20.0);
   }

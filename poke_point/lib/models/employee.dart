@@ -11,8 +11,10 @@ class Employee {
       this.email, this.phone);
 
   factory Employee.fromJson(Map<String, dynamic> json) {
-    return Employee(json['id'], json['idCompany'], json['name'], json['nif'],
-        json['address'], json['email'], json['phone']);
+    return json == null
+        ? json
+        : Employee(json['id'], json['idCompany'], json['name'], json['nif'],
+            json['address'], json['email'], json['phone']);
   }
 
   Map<String, dynamic> toMap() {

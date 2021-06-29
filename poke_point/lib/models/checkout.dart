@@ -15,8 +15,10 @@ class CheckOut {
   }
 
   factory CheckOut.fromJson(Map<String, dynamic> json) {
-    return CheckOut(json['id'], json['idWorkplace'], json['idCheckOutType'],
-        json['idTimecard']);
+    return json == null
+        ? json
+        : CheckOut(json['id'], json['idWorkplace'], json['idCheckOutType'],
+            json['idTimecard']);
   }
 
   Map<String, dynamic> toMap() {
