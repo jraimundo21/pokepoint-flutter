@@ -127,12 +127,12 @@ class _TimeTableState extends State<TimeTable> {
                                     fontStyle: FontStyle.italic,
                                     color: Colors.black))),
                             DataCell(Text(
-                                '${timecard.checkIn != null ? DateFormat('dd-MM-yy/HH:mm').format(DateFormat('yyyy-MM-ddTHH:mm:ss').parse(timecard.checkIn.timestamp, true)) : ''}',
+                                '${timecard.checkIn != null ? DateFormat('dd-MM-yy/HH:mm').format(DateFormat('yyyy-MM-ddTHH:mm:ss').parse(timecard.checkIn?.timestamp, true)) : ''}',
                                 style: TextStyle(
                                     fontStyle: FontStyle.italic,
                                     color: Colors.black))),
                             DataCell(Text(
-                                '${timecard.checkIn != null ? DateFormat('dd-MM-yy/HH:mm').format(DateFormat('yyyy-MM-ddTHH:mm:ss').parse(timecard.checkOut.timestamp, true)) : ''}',
+                                '${timecard.checkOut != null ? DateFormat('dd-MM-yy/HH:mm').format(DateFormat('yyyy-MM-ddTHH:mm:ss').parse(timecard.checkOut?.timestamp, true)) : ''}',
                                 style: TextStyle(
                                     fontStyle: FontStyle.italic,
                                     color: Colors.black))),
