@@ -25,6 +25,8 @@ dependencies:
   flutter_barcode_scanner: ^1.0.1
   crypt: ^3.0.1
   intl: ^0.15.7
+  badges: ^2.0.1
+  data_table_2: ^2.0.4
   
 dev_dependencies:
   flutter_test:
