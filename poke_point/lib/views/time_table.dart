@@ -11,6 +11,7 @@ class TimeTable extends StatefulWidget {
   TimeTable({Key key, this.changeCheckInToCheckOut}) : super(key: key);
 
   final Function() changeCheckInToCheckOut;
+
   @override
   _TimeTableState createState() => _TimeTableState();
 }
@@ -57,8 +58,14 @@ class _TimeTableState extends State<TimeTable> {
           children: [
             Container(
                 color: Color(0xFF11443c), //Colors.amber[600],
-                height: MediaQuery.of(context).size.height * 0.15, //150 ?,
-                width: MediaQuery.of(context).size.width,
+                height: MediaQuery
+                    .of(context)
+                    .size
+                    .height * 0.15, //150 ?,
+                width: MediaQuery
+                    .of(context)
+                    .size
+                    .width,
                 child: new Column(
                   children: [
                     Text(
@@ -69,14 +76,23 @@ class _TimeTableState extends State<TimeTable> {
                           fontSize: 30),
                     ),
                     Text(
-                      'Empregado: ${this.employee == null ? '' : this.employee.name}',
+                      'Empregado: ${this.employee == null ? '' : this.employee
+                          .name}',
                       style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
                           fontSize: 15),
                     ),
                     Text(
-                      'Empresa: ${this.company == null ? '' : this.company.name}',
+                      'Empresa: ${this.company == null ? '' : this.company
+                          .name}',
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 15),
+                    ),
+                    Text(
+                      'Horas Registadas: ${getTotalTime()}',
                       style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
@@ -85,62 +101,76 @@ class _TimeTableState extends State<TimeTable> {
                   ],
                 )),
             Container(
-                height: MediaQuery.of(context).size.height * 0.67, //150 ?,
+                height: MediaQuery
+                    .of(context)
+                    .size
+                    .height * 0.67, //150 ?,
                 child: !this.hasLoaded
                     ? Image(
-                        image: AssetImage('assets/images/loading2.gif'),
-                      )
+                  image: AssetImage('assets/images/loading2.gif'),
+                )
                     : new DataTable(
-                        columns: const <DataColumn>[
-                          DataColumn(
-                            label: Text(
-                              'Local',
-                              style: TextStyle(
-                                  fontStyle: FontStyle.italic,
-                                  color: Colors.black),
-                            ),
-                          ),
-                          DataColumn(
-                            label: Text(
-                              'Check In',
-                              style: TextStyle(
-                                  fontStyle: FontStyle.italic,
-                                  color: Colors.black),
-                            ),
-                          ),
-                          DataColumn(
-                            label: Text(
-                              'Checked Out',
-                              style: TextStyle(
-                                  fontStyle: FontStyle.italic,
-                                  color: Colors.black),
-                            ),
-                          ),
-                        ],
-                        rows: <DataRow>[
-                          if (timecards != null)
-                            for (var timecard in timecards)
-                              DataRow(
-                                cells: <DataCell>[
-                                  DataCell(Text(
-                                      '${timecard.checkIn != null ? getWorkplaceFromId(timecard.checkIn.idWorkplace).name : ''}',
-                                      style: TextStyle(
-                                          fontStyle: FontStyle.italic,
-                                          color: Colors.black))),
-                                  DataCell(Text(
-                                      '${timecard.checkIn != null ? DateFormat('dd-MM-yy/HH:mm').format(DateFormat('yyyy-MM-ddTHH:mm:ss').parse(timecard.checkIn?.timestamp, true)) : ''}',
-                                      style: TextStyle(
-                                          fontStyle: FontStyle.italic,
-                                          color: Colors.black))),
-                                  DataCell(Text(
-                                      '${timecard.checkOut != null ? DateFormat('dd-MM-yy/HH:mm').format(DateFormat('yyyy-MM-ddTHH:mm:ss').parse(timecard.checkOut?.timestamp, true)) : ''}',
-                                      style: TextStyle(
-                                          fontStyle: FontStyle.italic,
-                                          color: Colors.black))),
-                                ],
-                              ),
-                        ],
-                      ))
+                  columns: const <DataColumn>[
+                    DataColumn(
+                      label: Text(
+                        'Local',
+                        style: TextStyle(
+                            fontStyle: FontStyle.italic,
+                            color: Colors.black),
+                      ),
+                    ),
+                    DataColumn(
+                      label: Text(
+                        'Check In',
+                        style: TextStyle(
+                            fontStyle: FontStyle.italic,
+                            color: Colors.black),
+                      ),
+                    ),
+                    DataColumn(
+                      label: Text(
+                        'Checked Out',
+                        style: TextStyle(
+                            fontStyle: FontStyle.italic,
+                            color: Colors.black),
+                      ),
+                    ),
+                  ],
+                  rows: <DataRow>[
+                    if (timecards != null)
+                      for (var timecard in timecards)
+                        DataRow(
+                          cells: <DataCell>[
+                            DataCell(Text(
+                                '${timecard.checkIn != null
+                                    ? getWorkplaceFromId(
+                                    timecard.checkIn.idWorkplace).name
+                                    : ''}',
+                                style: TextStyle(
+                                    fontStyle: FontStyle.italic,
+                                    color: Colors.black))),
+                            DataCell(Text(
+                                '${timecard.checkIn != null
+                                    ? DateFormat('dd-MM-yy/HH:mm').format(
+                                    DateFormat('yyyy-MM-ddTHH:mm:ss').parse(
+                                        timecard.checkIn?.timestamp, true))
+                                    : ''}',
+                                style: TextStyle(
+                                    fontStyle: FontStyle.italic,
+                                    color: Colors.black))),
+                            DataCell(Text(
+                                '${timecard.checkOut != null
+                                    ? DateFormat('dd-MM-yy/HH:mm').format(
+                                    DateFormat('yyyy-MM-ddTHH:mm:ss').parse(
+                                        timecard.checkOut?.timestamp, true))
+                                    : ''}',
+                                style: TextStyle(
+                                    fontStyle: FontStyle.italic,
+                                    color: Colors.black))),
+                          ],
+                        ),
+                  ],
+                ))
           ],
         ),
       ),
@@ -156,11 +186,20 @@ class _TimeTableState extends State<TimeTable> {
     return null;
   }
 
-  int getTotalTime() {
+  String getTotalTime() {
     var total = 0;
-    for (var timecard in timecards) {
-      total += timecard.worktime;
+    if (timecards != null) {
+      for (var timecard in timecards) {
+        print(timecard.worktime);
+        total += timecard.worktime;
+      }
     }
-    return total;
+    // total is in ms
+    var duration = Duration(milliseconds: total);
+    String twoDigits(int n) => n.toString().padLeft(2, "0");
+    String twoDigitMinutes = twoDigits(duration.inMinutes.remainder(60));
+    String twoDigitSeconds = twoDigits(duration.inSeconds.remainder(60));
+    return "${twoDigits(duration.inHours)}:$twoDigitMinutes:$twoDigitSeconds";
+
   }
 }
