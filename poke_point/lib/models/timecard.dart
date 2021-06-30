@@ -57,7 +57,20 @@ class Timecard {
 
       await dbHelper.cacheData();
       return checkout != null;
-    } else {}
+    } else {
+      Timecard timecard = await dbHelper.getTimecard(checkIn.idTimecard);
+      int smallestCheckOutId = await dbHelper.getSmallestCheckOutId();
+
+      CheckOut checkOut = new CheckOut(
+          smallestCheckOutId > 0 ? -1 : smallestCheckOutId - 1,
+          checkIn.idWorkplace,
+          timecard.id,
+          ('${new DateTime.now().toIso8601String()}Z'),
+          1);
+
+      dbHelper.insertCheckOut(checkOut);
+      return checkOut != null;
+    }
   }
 
   static Future<bool> registerCheckInOnline(int idWorkplace) async {

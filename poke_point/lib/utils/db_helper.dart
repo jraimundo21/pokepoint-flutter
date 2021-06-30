@@ -99,9 +99,9 @@ class DbHelper {
 
   Future<void> clearCache() async {
     if (!(await Connection.isOnline())) return null;
-    await db.rawQuery('DELETE FROM checkin');
-    await db.rawQuery('DELETE FROM checkout');
-    await db.rawQuery('DELETE FROM timecard');
+    await db.rawQuery('DELETE FROM checkin WHERE id > 0');
+    await db.rawQuery('DELETE FROM checkout WHERE id > 0');
+    await db.rawQuery('DELETE FROM timecard WHERE id > 0');
     await db.rawQuery('DELETE FROM workplace');
     await db.rawQuery('DELETE FROM company');
   }
@@ -291,6 +291,15 @@ class DbHelper {
     timecards
         .sort((a, b) => a.checkIn.timestamp.compareTo(b.checkIn.timestamp));
     return timecards;
+  }
+
+  Future<Timecard> getTimecard(int idTimecard) async {
+    final List<Map<String, dynamic>> result =
+        await db.rawQuery('SELECT * FROM timecard WHERE id=?', [idTimecard]);
+    if (result.isEmpty) return null;
+    Timecard timecard = new Timecard(result[0]['id'], result[0]['idEmployee'],
+        result[0]['worktime'], result[0]['offline']);
+    return timecard;
   }
 
   Future<int> insertTimecard(Timecard timecard) async {
