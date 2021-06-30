@@ -1,9 +1,9 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart'; //não apagar
 import 'package:poke_point/utils/custom_parser.dart';
 import 'package:poke_point/models/timecard.dart';
+import '../../utils/toaster.dart';
 
 class QRCode extends StatefulWidget {
   QRCode({Key key, this.changeCheckInToCheckOut, this.changeBackToTimeTable})
@@ -261,22 +261,18 @@ class _QRCodeState extends State<QRCode> {
 
     // TODO APAGAR ESTE COMANDO
     this.qrCodeResult = CustomParser.decodeFromQueryString(
-        "employeeId=7&employeeName=a&workplaceId=1&workplaceName=posto1&timestamp=1624839729923");
+        "employeeId=7&employeeName=Igor Guedes&workplaceId=2&workplaceName=Obra 2&timestamp=1625013690482");
 
-    String checkInResult = await Timecard.registerByTapIn(this.qrCodeResult);
+    String checkInResult =
+        await Timecard.registerCheckInByTapIn(this.qrCodeResult);
 
     // Callback to change navigation options
     if (checkInResult == null) widget.changeCheckInToCheckOut();
 
-    Fluttertoast.showToast(
-        msg: checkInResult == null
+    MyToast.show(
+        checkInResult == null ? 1 : 3,
+        checkInResult == null
             ? "You have checked-in successfully"
-            : "Failed check-in. Try again later.",
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.CENTER,
-        timeInSecForIosWeb: 5,
-        backgroundColor: Colors.yellow[700],
-        textColor: Colors.white,
-        fontSize: 20.0);
+            : "Failed check-in. Try again later.");
   }
 }

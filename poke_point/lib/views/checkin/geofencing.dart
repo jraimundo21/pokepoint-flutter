@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
+import 'dart:async';
 import '../../utils/db_helper.dart';
 import '../../utils/toaster.dart';
 import '../../widgets/question_dialog.dart';
-import 'dart:async';
 import '../../models/workplace.dart';
 import '../../models/timecard.dart';
 import '../../models/employee.dart';
@@ -129,16 +129,18 @@ class _GeoFencingState extends State<GeoFencing> {
   Future checkIn() async {
     if (await Employee.isCheckedIn()) {
       MyToast.show(2, 'Already checked-in');
+      widget.changeCheckInToCheckOut();
     } else {
-      bool isCheckInSuccess = await Timecard.registerOnline(idCheckInWorkplace);
+      bool isCheckInSuccess =
+          await Timecard.registerCheckInOnline(idCheckInWorkplace);
       MyToast.show(
           isCheckInSuccess ? 1 : 3,
           isCheckInSuccess
               ? 'Checked-in successfully'
               : 'Failed to check-in, try again later');
+      if (isCheckInSuccess) widget.changeCheckInToCheckOut();
     }
     // Callback to change navigation options
-    widget.changeCheckInToCheckOut();
   }
 
   Future dontCheckIn() async {

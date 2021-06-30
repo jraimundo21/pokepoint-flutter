@@ -2,6 +2,7 @@ import '../models/checkin.dart';
 import '../models/checkout.dart';
 import '../utils/db_helper.dart';
 import '../utils/http_helper.dart';
+import '../utils/connection.dart';
 
 class Timecard {
   int id;
@@ -41,11 +42,25 @@ class Timecard {
     this.checkOut = checkOut;
   }
 
-  static registerCheckIn() {}
+  static registerCheckOut() async {
+    DbHelper dbHelper = new DbHelper();
+    await dbHelper.openDb();
 
-  static registerOffline() {}
+    int employeeId = await dbHelper.getCurrentEmployeeId();
+    CheckIn checkIn = await dbHelper.getLastCheckIn();
 
-  static Future<bool> registerOnline(int idWorkplace) async {
+    if (await Connection.isOnline()) {
+      var checkout = await HttpHelper.post('employees/$employeeId/checkouts/', {
+        "workplace": checkIn.idWorkplace,
+        "timestamp": new DateTime.now().toIso8601String()
+      });
+
+      await dbHelper.cacheData();
+      return checkout != null;
+    } else {}
+  }
+
+  static Future<bool> registerCheckInOnline(int idWorkplace) async {
     // Registar este check in
     DbHelper dbHelper = new DbHelper();
     await dbHelper.openDb();
@@ -63,7 +78,7 @@ class Timecard {
     return checkin != null;
   }
 
-  static registerByTapIn(Map colleagueInfo) async {
+  static registerCheckInByTapIn(Map colleagueInfo) async {
     DbHelper dbHelper = new DbHelper();
     await dbHelper.openDb();
 

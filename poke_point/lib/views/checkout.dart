@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:connectivity/connectivity.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import '../utils/theme.dart';
+import 'package:poke_point/models/timecard.dart';
+import 'package:poke_point/models/employee.dart';
+import '../utils/toaster.dart';
 
 class CheckOut extends StatefulWidget {
   CheckOut({Key key, this.changeCheckOutToCheckIn}) : super(key: key);
@@ -13,19 +14,20 @@ class CheckOut extends StatefulWidget {
 }
 
 class _CheckOutState extends State<CheckOut> with TickerProviderStateMixin {
-  void checkOut() {
-    // Call method to check-out, api, database, whatever
+  void checkOut() async {
+    if (!(await Employee.isCheckedIn())) {
+      MyToast.show(2, 'Already checked-out');
+      widget.changeCheckOutToCheckIn();
+    } else {
+      bool isCheckOutSuccess = await Timecard.registerCheckOut();
+      MyToast.show(
+          isCheckOutSuccess ? 1 : 3,
+          isCheckOutSuccess
+              ? "You have checked-out successfully"
+              : 'Failed to check-out, try again later');
 
-    widget.changeCheckOutToCheckIn();
-
-    Fluttertoast.showToast(
-        msg: "You have checked-out successfully",
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.CENTER,
-        timeInSecForIosWeb: 5,
-        backgroundColor: Colors.red,
-        textColor: Colors.white,
-        fontSize: 20.0);
+      if (isCheckOutSuccess) widget.changeCheckOutToCheckIn();
+    }
   }
 
   @override
