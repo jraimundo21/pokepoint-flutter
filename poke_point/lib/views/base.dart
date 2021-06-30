@@ -168,7 +168,9 @@ class _BaseViewState extends State<BaseView> {
               changeCheckInToCheckOut: this.changeCheckInToCheckOut,
               changeBackToTimeTable: this.changeBackToTimeTable)
           : TapIn(),
-      CheckOut(changeCheckOutToCheckIn: this.changeCheckOutToCheckIn)
+      CheckOut(
+          changeCheckOutToCheckIn: this.changeCheckOutToCheckIn,
+          changeBackToTimeTable: this.changeBackToTimeTable)
     ];
 
     return PageView(

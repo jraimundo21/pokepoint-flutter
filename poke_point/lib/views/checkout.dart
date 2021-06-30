@@ -1,20 +1,31 @@
 import 'package:flutter/material.dart';
-import 'package:connectivity/connectivity.dart';
 import 'package:poke_point/models/timecard.dart';
 import 'package:poke_point/models/employee.dart';
 import '../utils/toaster.dart';
 
 class CheckOut extends StatefulWidget {
-  CheckOut({Key key, this.changeCheckOutToCheckIn}) : super(key: key);
+  CheckOut({Key key, this.changeCheckOutToCheckIn, this.changeBackToTimeTable})
+      : super(key: key);
 
   final Function() changeCheckOutToCheckIn;
+  final Function() changeBackToTimeTable;
 
   @override
   _CheckOutState createState() => _CheckOutState();
 }
 
 class _CheckOutState extends State<CheckOut> with TickerProviderStateMixin {
+  bool isCheckOutPressed = false;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
   void checkOut() async {
+    setState(() {
+      isCheckOutPressed = true;
+    });
     if (!(await Employee.isCheckedIn())) {
       MyToast.show(2, 'Already checked-out');
       widget.changeCheckOutToCheckIn();
@@ -26,7 +37,10 @@ class _CheckOutState extends State<CheckOut> with TickerProviderStateMixin {
               ? "You have checked-out successfully"
               : 'Failed to check-out, try again later');
 
-      if (isCheckOutSuccess) widget.changeCheckOutToCheckIn();
+      if (isCheckOutSuccess)
+        widget.changeCheckOutToCheckIn();
+      else
+        widget.changeBackToTimeTable();
     }
   }
 
@@ -55,24 +69,29 @@ class _CheckOutState extends State<CheckOut> with TickerProviderStateMixin {
                 child: new Column(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    ElevatedButton(
-                      child: Text(
-                        'Check Out!',
-                        style: TextStyle(color: Colors.white, fontSize: 24),
-                      ),
-                      style: ElevatedButton.styleFrom(
-                        onPrimary: Colors.white,
-                        primary: Colors.red[900],
-                        onSurface: Colors.grey,
-                        side: BorderSide(color: Colors.black, width: 0.4),
-                        elevation: 20,
-                        minimumSize: Size(200, 200),
-                        shadowColor: Colors.grey,
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(100)),
-                      ),
-                      onPressed: checkOut,
-                    ),
+                    isCheckOutPressed
+                        ? Image(
+                            image: AssetImage('assets/images/loading2.gif'),
+                          )
+                        : ElevatedButton(
+                            child: Text(
+                              'Check Out!',
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 24),
+                            ),
+                            style: ElevatedButton.styleFrom(
+                              onPrimary: Colors.white,
+                              primary: Colors.red[900],
+                              onSurface: Colors.grey,
+                              side: BorderSide(color: Colors.black, width: 0.4),
+                              elevation: 20,
+                              minimumSize: Size(200, 200),
+                              shadowColor: Colors.grey,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(100)),
+                            ),
+                            onPressed: checkOut,
+                          ),
                   ],
                 ),
               ),

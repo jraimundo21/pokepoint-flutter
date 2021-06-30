@@ -288,6 +288,8 @@ class DbHelper {
       var checkOut = await getCheckOut(timecards[i].id);
       timecards[i].setCheckOut(checkOut);
     }
+    timecards
+        .sort((a, b) => a.checkIn.timestamp.compareTo(b.checkIn.timestamp));
     return timecards;
   }
 
