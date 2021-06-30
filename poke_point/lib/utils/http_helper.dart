@@ -2,11 +2,13 @@ import 'dart:io';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'db_helper.dart';
+import './connection.dart';
 
 class HttpHelper {
   static final String baseUrl = 'http://167.233.9.184:81/pokepoint/api/';
 
   static getEmployee() async {
+    if (!(await Connection.isOnline())) return null;
     DbHelper dbHelper = new DbHelper();
     await dbHelper.openDb();
     var user = await dbHelper.getUser();
@@ -21,6 +23,7 @@ class HttpHelper {
   }
 
   static getCompany(id) async {
+    if (!(await Connection.isOnline())) return null;
     DbHelper dbHelper = new DbHelper();
     await dbHelper.openDb();
     var user = await dbHelper.getUser();
@@ -35,6 +38,7 @@ class HttpHelper {
   }
 
   static getWorkplaces(idCompany) async {
+    if (!(await Connection.isOnline())) return null;
     DbHelper dbHelper = new DbHelper();
     await dbHelper.openDb();
     var user = await dbHelper.getUser();
@@ -49,6 +53,7 @@ class HttpHelper {
   }
 
   static get(resource) async {
+    if (!(await Connection.isOnline())) return null;
     DbHelper dbHelper = new DbHelper();
     await dbHelper.openDb();
     var user = await dbHelper.getUser();
@@ -64,6 +69,8 @@ class HttpHelper {
 
   static Future<Map<String, dynamic>> post(
       String resource, Map<String, dynamic> json) async {
+    if (!(await Connection.isOnline())) return null;
+
     DbHelper dbHelper = new DbHelper();
     await dbHelper.openDb();
     var user = await dbHelper.getUser();
@@ -84,5 +91,7 @@ class HttpHelper {
     }
   }
 
-  static checkOut() async {}
+  static checkOut() async {
+    if (!(await Connection.isOnline())) return null;
+  }
 }

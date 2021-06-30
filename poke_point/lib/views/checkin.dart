@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import '../utils/theme.dart';
 import './checkin/geofencing.dart';
-import './checkin/nfc.dart';
+// import './checkin/nfc.dart';
 import './checkin/qrcode.dart';
-import './checkin/manual.dart';
+// import './checkin/manual.dart';
 import 'package:connectivity/connectivity.dart';
 import 'dart:async';
 import 'dart:ui';
+import '../models/employee.dart';
 
 class CheckIn extends StatefulWidget {
   CheckIn({Key key, this.changeCheckInToCheckOut, this.changeBackToTimeTable})
@@ -28,9 +29,14 @@ class _CheckInState extends State<CheckIn> {
   Connectivity _connectivity = Connectivity();
   StreamSubscription<ConnectivityResult> _connectivitySubscription;
 
+  void checkCheckInStatus() async {
+    if (await Employee.isCheckedIn()) widget.changeCheckInToCheckOut();
+  }
+
   @override
   void initState() {
     super.initState();
+    checkCheckInStatus();
     initConnectivity();
     _connectivitySubscription =
         _connectivity.onConnectivityChanged.listen(_updateConnectionStatus);

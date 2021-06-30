@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 import '../utils/http_helper.dart';
 import '../utils/db_helper.dart';
+import '../utils/connection.dart';
 
 class User {
   int id;
@@ -42,6 +43,8 @@ class User {
     String basicAuth =
         'Basic ' + base64Encode(utf8.encode('$username:$password'));
     // return _offlinelogin(username, basicAuth);
+    if (!(await Connection.isOnline()))
+      return _offlinelogin(username, basicAuth);
     try {
       var response = await http.post(Uri.parse(HttpHelper.baseUrl + 'login/'),
           headers: <String, String>{

@@ -8,6 +8,7 @@ import '../models/workplace.dart';
 import '../models/checkin.dart';
 import '../models/checkout.dart';
 import '../models/user.dart';
+import './connection.dart';
 
 class DbHelper {
   static final DbHelper _dbHelper = DbHelper._internal();
@@ -96,7 +97,19 @@ class DbHelper {
     }
   }
 
+  Future<void> clearCache() async {
+    if (!(await Connection.isOnline())) return null;
+    await db.rawQuery('DELETE FROM checkin');
+    await db.rawQuery('DELETE FROM checkout');
+    await db.rawQuery('DELETE FROM timecard');
+    await db.rawQuery('DELETE FROM workplace');
+    await db.rawQuery('DELETE FROM company');
+  }
+
   Future<void> cacheData() async {
+    if (!(await Connection.isOnline())) return null;
+
+    await clearCache();
     var employeeData = await HttpHelper.getEmployee();
     employeeData['idCompany'] = employeeData['worksAtCompany'];
     Employee employee = new Employee.fromJson(employeeData);
@@ -117,7 +130,7 @@ class DbHelper {
 
   getLastCheckIn() async {
     List<Timecard> timecards = await getTimecards();
-    CheckIn lastCheckIn = timecards[0].checkIn;
+    CheckIn lastCheckIn = timecards[0]?.checkIn;
     timecards.forEach((timecard) {
       if (timecard.checkIn != null && timecard.checkIn.timestamp != null) {
         if (timecard.checkIn.timestamp.compareTo(lastCheckIn.timestamp) > 0)

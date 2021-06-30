@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import '../../utils/db_helper.dart';
+import '../../utils/toaster.dart';
 import '../../widgets/question_dialog.dart';
 import 'dart:async';
 import '../../models/workplace.dart';
 import '../../models/timecard.dart';
+import '../../models/employee.dart';
 
 class GeoFencing extends StatefulWidget {
   GeoFencing(
@@ -126,21 +127,18 @@ class _GeoFencingState extends State<GeoFencing> {
   }
 
   Future checkIn() async {
-    String checkInResult = await Timecard.registerOnline(idCheckInWorkplace);
-
+    if (await Employee.isCheckedIn()) {
+      MyToast.show(2, 'Already checked-in');
+    } else {
+      bool isCheckInSuccess = await Timecard.registerOnline(idCheckInWorkplace);
+      MyToast.show(
+          isCheckInSuccess ? 1 : 3,
+          isCheckInSuccess
+              ? 'Checked-in successfully'
+              : 'Failed to check-in, try again later');
+    }
     // Callback to change navigation options
-    if (checkInResult == null) widget.changeCheckInToCheckOut();
-
-    Fluttertoast.showToast(
-        msg: checkInResult == null
-            ? "You have checked-in successfully"
-            : "Failed check-in. Try again later.",
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.CENTER,
-        timeInSecForIosWeb: 5,
-        backgroundColor: Colors.yellow[700],
-        textColor: Colors.white,
-        fontSize: 20.0);
+    widget.changeCheckInToCheckOut();
   }
 
   Future dontCheckIn() async {

@@ -45,28 +45,22 @@ class Timecard {
 
   static registerOffline() {}
 
-  static registerOnline(int idWorkplace) async {
-// Registar este check in
+  static Future<bool> registerOnline(int idWorkplace) async {
+    // Registar este check in
     DbHelper dbHelper = new DbHelper();
     await dbHelper.openDb();
 
     int employeeId = await dbHelper.getCurrentEmployeeId();
 
-    Timecard timecard = Timecard.fromJson(await HttpHelper.post(
-        'employees/$employeeId/timecards/', {"employee": employeeId}));
-
-    CheckIn checkIn = CheckIn.fromJson(
-        await HttpHelper.post('employees/$employeeId/checkins/', {
+    var checkin = await HttpHelper.post('employees/$employeeId/checkins/', {
       "workplace": idWorkplace,
       "checkInType": 3,
-      "timeCard": timecard.id,
-      "timestamp": "2021-06-26T22:10:19Z"
-    }));
+      "timestamp": new DateTime.now().toIso8601String()
+    });
 
-    timecard.setCheckIn(checkIn);
-    dbHelper.insertTimecard(timecard);
+    await dbHelper.cacheData();
 
-    var a = 9;
+    return checkin != null;
   }
 
   static registerByTapIn(Map colleagueInfo) async {

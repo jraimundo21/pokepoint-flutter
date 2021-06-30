@@ -26,10 +26,10 @@ class _TapInState extends State<TapIn> {
   void prepareDataForTapIn() async {
     DbHelper dbHelper = new DbHelper();
     await dbHelper.openDb();
-
+    // await dbHelper.cacheData();
     employee = await dbHelper.getEmployee();
     lastCheckIn = await dbHelper.getLastCheckIn();
-    workplace = await dbHelper.getWorkplace(lastCheckIn.idWorkplace);
+    workplace = await dbHelper.getWorkplace(lastCheckIn?.idWorkplace);
 
     renewQRCode();
   }
@@ -112,45 +112,50 @@ class _TapInState extends State<TapIn> {
                         fontWeight: FontWeight.w500,
                         fontSize: 25),
                   ),
-                  new Container(
-                    color: PrimaryColorLight,
-                    child: new Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        new Text(
-                          'Renewing in ',
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w300,
-                              fontSize: 17),
-                        ),
-                        new Text(
-                          currentSecond.toString(),
-                          style: TextStyle(
-                              color: SecondaryColor,
-                              fontWeight: FontWeight.w500,
-                              fontSize: 20),
-                        ),
-                        new Text(
-                          ' seconds.',
-                          style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w300,
-                              fontSize: 17),
-                        ),
-                      ],
-                    ),
-                  )
+                  credentialDataToSend == null
+                      ? new Container()
+                      : new Container(
+                          color: PrimaryColorLight,
+                          child: new Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              new Text(
+                                'Renewing in ',
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w300,
+                                    fontSize: 17),
+                              ),
+                              new Text(
+                                currentSecond.toString(),
+                                style: TextStyle(
+                                    color: SecondaryColor,
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 20),
+                              ),
+                              new Text(
+                                ' seconds.',
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w300,
+                                    fontSize: 17),
+                              ),
+                            ],
+                          ),
+                        )
                 ],
               ),
             ),
-            new Container(
-                child: new Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                credentialDataToSend != null
-                    ? QrImage(
+            credentialDataToSend == null
+                ? Image(
+                    image: AssetImage('assets/images/loading2.gif'),
+                  )
+                : new Container(
+                    child: new Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      QrImage(
                         data: credentialDataToSend,
                         version: QrVersions.auto,
                         // size: 320,
@@ -160,34 +165,33 @@ class _TapInState extends State<TapIn> {
                         embeddedImageStyle: QrEmbeddedImageStyle(
                           size: Size(80, 80),
                         ),
-                      )
-                    : new Container(),
-                new Container(
-                    width: MediaQuery.of(context).size.width,
-                    height: 70,
-                    color: Colors.white,
-                    child: new Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        new Text(
-                          'Instructions:',
-                          style: TextStyle(
-                              color: Colors.red[600],
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20),
-                        ),
-                        new Text(
-                          'Let your colleague scan this QR Code.', //\nOr, alternatively, turn on your NFC and put your mobiles together.',
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 14),
-                        ),
-                      ],
-                    ))
-              ],
-            ))
+                      ),
+                      new Container(
+                          width: MediaQuery.of(context).size.width,
+                          height: 70,
+                          color: Colors.white,
+                          child: new Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              new Text(
+                                'Instructions:',
+                                style: TextStyle(
+                                    color: Colors.red[600],
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 20),
+                              ),
+                              new Text(
+                                'Let your colleague scan this QR Code.', //\nOr, alternatively, turn on your NFC and put your mobiles together.',
+                                style: TextStyle(
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 14),
+                              ),
+                            ],
+                          ))
+                    ],
+                  ))
           ],
         ),
       ),

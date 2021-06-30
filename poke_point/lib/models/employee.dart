@@ -1,3 +1,6 @@
+import '../utils/db_helper.dart';
+import './timecard.dart';
+
 class Employee {
   int id;
   int idCompany;
@@ -15,6 +18,21 @@ class Employee {
         ? json
         : Employee(json['id'], json['idCompany'], json['name'], json['nif'],
             json['address'], json['email'], json['phone']);
+  }
+
+  static Future<Employee> getEmployee() async {
+    DbHelper dbHelper = new DbHelper();
+    await dbHelper.openDb();
+    // dbHelper.cacheData();
+    return dbHelper.getEmployee();
+  }
+
+  static Future<bool> isCheckedIn() async {
+    DbHelper dbHelper = new DbHelper();
+    await dbHelper.openDb();
+
+    Timecard lastTimecard = (await dbHelper.getTimecards()).last;
+    return lastTimecard.checkOut == null;
   }
 
   Map<String, dynamic> toMap() {

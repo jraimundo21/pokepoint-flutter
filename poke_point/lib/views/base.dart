@@ -5,8 +5,8 @@ import './checkin.dart';
 import './checkout.dart';
 import './tapin.dart';
 import '../views/login.dart';
-import '../utils/http_helper.dart';
 import '../utils/db_helper.dart';
+import '../models/employee.dart';
 
 class BaseView extends StatefulWidget {
   BaseView({Key key}) : super(key: key);
@@ -19,83 +19,14 @@ class _BaseViewState extends State<BaseView> {
   int selectedIndex = 0;
   bool iAmCheckedIn = false;
 
-  void changeCheckInToCheckOut() {
-    _changeView(0); // 0 is the first position: 'TimeTable'
-    setState(() {
-      iAmCheckedIn = true;
-    });
-  }
-
-  void changeCheckOutToCheckIn() {
-    _changeView(0); // 0 is the second position: 'TimeTable'
-    setState(() {
-      iAmCheckedIn = false;
-    });
-  }
-
-  void changeBackToTimeTable() {
-    _changeView(0); // 0 is the second position: 'TimeTable'
-  }
-
-  void logout(_context) {
-    Navigator.pop(_context);
-  }
-
-  List<BottomNavigationBarItem> checkedOutNavOptions = [
-    BottomNavigationBarItem(icon: new Icon(Icons.timer), label: 'Horas'),
-    BottomNavigationBarItem(
-        icon: new Icon(Icons.adjust_outlined), label: 'Check-in'),
-  ];
-
-  List<BottomNavigationBarItem> checkedInNavOptions = [
-    BottomNavigationBarItem(icon: new Icon(Icons.timer), label: 'Horas'),
-    BottomNavigationBarItem(icon: new Icon(Icons.person_add), label: 'Tap-in'),
-    BottomNavigationBarItem(
-        icon: new Icon(Icons.adjust_outlined), label: 'Check-out'),
-  ];
-
-  PageController pageController = PageController(
-    initialPage: 0,
-    keepPage: true,
-  );
-
-  Widget buildPageView() {
-    List<Widget> views = [
-      TimeTable(),
-      !iAmCheckedIn
-          ? CheckIn(
-              changeCheckInToCheckOut: this.changeCheckInToCheckOut,
-              changeBackToTimeTable: this.changeBackToTimeTable)
-          : TapIn(),
-      CheckOut(changeCheckOutToCheckIn: this.changeCheckOutToCheckIn)
-    ];
-
-    return PageView(
-      controller: pageController,
-      onPageChanged: (index) {
-        _pageChanged(index);
-      },
-      children: views,
-    );
+  void checkCheckInStatus() async {
+    iAmCheckedIn = await Employee.isCheckedIn();
   }
 
   @override
   void initState() {
     super.initState();
-  }
-
-  void _pageChanged(int index) {
-    setState(() {
-      selectedIndex = index;
-    });
-  }
-
-  void _changeView(int index) {
-    setState(() {
-      selectedIndex = index;
-      pageController.animateToPage(index,
-          duration: Duration(milliseconds: 500), curve: Curves.ease);
-    });
+    checkCheckInStatus();
   }
 
   @override
@@ -141,17 +72,18 @@ class _BaseViewState extends State<BaseView> {
               new Container(
                 child: ListTile(
                   title: new Text(
-                    'Botão para testar',
+                    'Sincronizar dados',
                     style: TextStyle(
                         color: Colors.black,
                         fontWeight: FontWeight.bold,
                         fontSize: 18),
                   ),
                   onTap: () async {
-                    // var a = await HttpHelper.getEmployee();
-                    DbHelper dbHelper = new DbHelper();
-                    var c = dbHelper.cacheData();
-                    var b = 2;
+                    if (mounted)
+                      setState(() {
+                        DbHelper dbHelper = new DbHelper();
+                        dbHelper.cacheData();
+                      });
                   }, //0 é o índice da view que se pretende selecionar
                 ),
               )
@@ -171,6 +103,80 @@ class _BaseViewState extends State<BaseView> {
                 ? this.checkedOutNavOptions
                 : this.checkedInNavOptions),
       ),
+    );
+  }
+
+  void _pageChanged(int index) {
+    setState(() {
+      selectedIndex = index;
+    });
+  }
+
+  void _changeView(int index) {
+    setState(() {
+      selectedIndex = index;
+      pageController.animateToPage(index,
+          duration: Duration(milliseconds: 500), curve: Curves.ease);
+    });
+  }
+
+  void changeCheckInToCheckOut() {
+    _changeView(0); // 0 is the first position: 'TimeTable'
+    setState(() {
+      iAmCheckedIn = true;
+    });
+  }
+
+  void changeCheckOutToCheckIn() {
+    _changeView(0); // 0 is the second position: 'TimeTable'
+    setState(() {
+      iAmCheckedIn = false;
+    });
+  }
+
+  void changeBackToTimeTable() {
+    _changeView(0); // 0 is the second position: 'TimeTable'
+  }
+
+  void logout(_context) {
+    Navigator.pop(_context);
+  }
+
+  List<BottomNavigationBarItem> checkedOutNavOptions = [
+    BottomNavigationBarItem(icon: new Icon(Icons.timer), label: 'Horas'),
+    BottomNavigationBarItem(
+        icon: new Icon(Icons.adjust_outlined), label: 'Check-in'),
+  ];
+
+  List<BottomNavigationBarItem> checkedInNavOptions = [
+    BottomNavigationBarItem(icon: new Icon(Icons.timer), label: 'Horas'),
+    BottomNavigationBarItem(icon: new Icon(Icons.person_add), label: 'Tap-in'),
+    BottomNavigationBarItem(
+        icon: new Icon(Icons.adjust_outlined), label: 'Check-out'),
+  ];
+
+  PageController pageController = PageController(
+    initialPage: 0,
+    keepPage: true,
+  );
+
+  Widget buildPageView() {
+    List<Widget> views = [
+      TimeTable(changeCheckInToCheckOut: this.changeCheckInToCheckOut),
+      !iAmCheckedIn
+          ? CheckIn(
+              changeCheckInToCheckOut: this.changeCheckInToCheckOut,
+              changeBackToTimeTable: this.changeBackToTimeTable)
+          : TapIn(),
+      CheckOut(changeCheckOutToCheckIn: this.changeCheckOutToCheckIn)
+    ];
+
+    return PageView(
+      controller: pageController,
+      onPageChanged: (index) {
+        _pageChanged(index);
+      },
+      children: views,
     );
   }
 }
