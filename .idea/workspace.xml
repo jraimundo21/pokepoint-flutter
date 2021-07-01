@@ -3,16 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="bf31a2d5-68b0-4cb4-b4bc-f28cdee8b6d0" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/poke_point/lib/utils/connection.dart" beforeDir="false" afterPath="$PROJECT_DIR$/poke_point/lib/utils/connection.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/poke_point/lib/utils/db_helper.dart" beforeDir="false" afterPath="$PROJECT_DIR$/poke_point/lib/utils/db_helper.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/poke_point/lib/views/base.dart" beforeDir="false" afterPath="$PROJECT_DIR$/poke_point/lib/views/base.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/poke_point/lib/views/checkin.dart" beforeDir="false" afterPath="$PROJECT_DIR$/poke_point/lib/views/checkin.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/poke_point/lib/views/checkin/manual.dart" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/poke_point/lib/views/checkin/nfc.dart" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/poke_point/lib/views/checkout.dart" beforeDir="false" afterPath="$PROJECT_DIR$/poke_point/lib/views/checkout.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/poke_point/lib/views/tapin.dart" beforeDir="false" afterPath="$PROJECT_DIR$/poke_point/lib/views/tapin.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/poke_point/lib/views/time_table.dart" beforeDir="false" afterPath="$PROJECT_DIR$/poke_point/lib/views/time_table.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/poke_point/pubspec.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/poke_point/pubspec.yaml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -47,9 +38,10 @@
     <servers />
   </component>
   <component name="WindowStateProjectService">
-    <state x="100" y="100" width="1720" height="840" key="AVDManager" timestamp="1625096109690">
-      <screen x="0" y="0" width="1920" height="1040" />
+    <state x="100" y="-980" width="1720" height="840" key="AVDManager" timestamp="1625164312892">
+      <screen x="0" y="-1080" width="1920" height="1040" />
     </state>
+    <state x="100" y="-980" width="1720" height="840" key="AVDManager/0.0.1920.1040/0.-1080.1920.1040@0.-1080.1920.1040" timestamp="1625164312892" />
     <state x="100" y="100" width="1720" height="840" key="AVDManager/0.0.1920.1040/0.-1080.1920.1040@0.0.1920.1040" timestamp="1625096109690" />
     <state x="100" y="100" width="1720" height="840" key="AVDManager/0.0.1920.1040@0.0.1920.1040" timestamp="1624996451550" />
   </component>

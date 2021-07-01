@@ -22,6 +22,7 @@ class TimeTable extends StatefulWidget {
 }
 
 class _TimeTableState extends State<TimeTable> {
+  DbHelper dbHelper = new DbHelper();
   Connectivity _connectivity = Connectivity();
   StreamSubscription<ConnectivityResult> _connectivitySubscription;
   bool hasLoaded = false;
@@ -35,7 +36,6 @@ class _TimeTableState extends State<TimeTable> {
   }
 
   void loadDataFromDb() async {
-    DbHelper dbHelper = new DbHelper();
     await dbHelper.openDb();
 
     workplaces = await dbHelper.getWorkplaces();
@@ -47,6 +47,12 @@ class _TimeTableState extends State<TimeTable> {
       setState(() {
         hasLoaded = true;
       });
+  }
+
+  Future<void> refreshList() async {
+    await dbHelper.openDb();
+    await dbHelper.cacheData();
+    loadDataFromDb();
   }
 
   @override
@@ -123,12 +129,14 @@ class _TimeTableState extends State<TimeTable> {
                   ],
                 )),
             Container(
-                height: MediaQuery.of(context).size.height * 0.67, //150 ?,
-                child: !this.hasLoaded
-                    ? Image(
-                        image: AssetImage('assets/images/loading2.gif'),
-                      )
-                    : new DataTable2(
+              height: MediaQuery.of(context).size.height * 0.67, //150 ?,
+              child: !this.hasLoaded
+                  ? Image(
+                      image: AssetImage('assets/images/loading2.gif'),
+                    )
+                  : RefreshIndicator(
+                      onRefresh: refreshList,
+                      child: new DataTable2(
                         columnSpacing: 8,
                         columns: const <DataColumn>[
                           DataColumn(
@@ -197,7 +205,9 @@ class _TimeTableState extends State<TimeTable> {
                                 ],
                               ),
                         ],
-                      ))
+                      ),
+                    ),
+            )
           ],
         ),
       ),
