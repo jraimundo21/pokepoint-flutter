@@ -50,6 +50,7 @@ class _TimeTableState extends State<TimeTable> {
   }
 
   Future<void> refreshList() async {
+    Connection.synchronize();
     await dbHelper.openDb();
     await dbHelper.cacheData();
     loadDataFromDb();
@@ -82,7 +83,9 @@ class _TimeTableState extends State<TimeTable> {
         result == ConnectivityResult.mobile) {
       await Connection.synchronize();
       loadDataFromDb();
-      setState(() {});
+      if (mounted) {
+        setState(() {});
+      }
     }
   }
 
