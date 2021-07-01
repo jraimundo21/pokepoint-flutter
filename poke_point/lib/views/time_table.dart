@@ -73,10 +73,11 @@ class _TimeTableState extends State<TimeTable> {
 
   Future<void> _updateConnectionStatus(ConnectivityResult result) async {
     if (result == ConnectivityResult.wifi ||
-        result == ConnectivityResult.mobile)
-      setState(() {
-        Connection.synchronize();
-      });
+        result == ConnectivityResult.mobile) {
+      await Connection.synchronize();
+      loadDataFromDb();
+      setState(() {});
+    }
   }
 
   @override

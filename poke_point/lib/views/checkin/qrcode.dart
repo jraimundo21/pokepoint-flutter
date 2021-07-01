@@ -102,31 +102,31 @@ class _QRCodeState extends State<QRCode> {
 //
 //
 // TODO Apagar aqui, descomentar a de baixo.
-  Future<void> scanQRCode() async {
-    setState(() {
-      this.qrCodeResult = CustomParser.decodeFromQueryString(
-          'timestamp=${(new DateTime.now().millisecondsSinceEpoch)}&userId=124123&userName=José Bacalhau&workplaceId=1234432&workplaceName=Local De Trabalho 1');
-      startTimerCountDownForReset();
-    });
-  }
+  // Future<void> scanQRCode() async {
+  //   setState(() {
+  //     this.qrCodeResult = CustomParser.decodeFromQueryString(
+  //         'timestamp=${(new DateTime.now().millisecondsSinceEpoch)}&userId=124123&userName=José Bacalhau&workplaceId=1234432&workplaceName=Local De Trabalho 1');
+  //     startTimerCountDownForReset();
+  //   });
+  // }
 
 ////////////////////////////////////////////////////// NÃO APAGAR ESTA FUNçÃO
   ///                                                     Substitui a anterior
-  // Future<void> scanQRCode() async {
-  //   try {
-  //     final qrCode = await FlutterBarcodeScanner.scanBarcode(
-  //         '#ff6666', 'Cancel', true, ScanMode.QR);
+  Future<void> scanQRCode() async {
+    try {
+      final qrCode = await FlutterBarcodeScanner.scanBarcode(
+          '#ff6666', 'Cancel', true, ScanMode.QR);
 
-  //     if (!mounted) return;
+      if (!mounted) return;
 
-  //     setState(() {
-  //       this.qrCodeResult = CustomParser.decodeFromQueryString(qrCode);
-  //       startTimerCountDownForReset();
-  //     });
-  //   } catch (e) {
-  //     this.qrCodeResult = {};
-  //   }
-  // }
+      setState(() {
+        this.qrCodeResult = CustomParser.decodeFromQueryString(qrCode);
+        startTimerCountDownForReset();
+      });
+    } catch (e) {
+      this.qrCodeResult = {};
+    }
+  }
 
   Widget onScanButtonClick() {
     return ElevatedButton(
@@ -260,8 +260,8 @@ class _QRCodeState extends State<QRCode> {
     // Checked-in succefully
 
     // TODO APAGAR ESTE COMANDO
-    this.qrCodeResult = CustomParser.decodeFromQueryString(
-        "employeeId=7&employeeName=Igor Guedes&workplaceId=2&workplaceName=Obra 2&timestamp=1625013690482");
+    // this.qrCodeResult = CustomParser.decodeFromQueryString(
+    //     "employeeId=7&employeeName=Igor Guedes&workplaceId=2&workplaceName=Obra 2&timestamp=1625013690482");
 
     String checkInResult =
         await Timecard.registerCheckInByTapIn(this.qrCodeResult);

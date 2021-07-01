@@ -15,7 +15,8 @@ class Connection {
 
     List<Timecard> timecards = await dbHelper.getTimecards();
     // Filter timecards leaving only the ones with timecard, checkin or checkout offline == true
-    timecards.forEach((timecard) async {
+
+    for (var timecard in timecards) {
       // Sync check ins
       if (timecard.checkIn != null && timecard.checkIn.offline) {
         var checkin = await HttpHelper.post(
@@ -51,6 +52,6 @@ class Connection {
         });
         timecard.checkOut.id = checkout['id'];
       }
-    });
+    }
   }
 }

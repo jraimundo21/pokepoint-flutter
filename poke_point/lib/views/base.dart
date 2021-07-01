@@ -74,24 +74,24 @@ class _BaseViewState extends State<BaseView> {
                   }, //0 é o índice da view que se pretende selecionar
                 ),
               ),
-              new Container(
-                child: ListTile(
-                  title: new Text(
-                    'Sincronizar dados',
-                    style: TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18),
-                  ),
-                  onTap: () async {
-                    if (mounted)
-                      setState(() {
-                        DbHelper dbHelper = new DbHelper();
-                        dbHelper.cacheData();
-                      });
-                  }, //0 é o índice da view que se pretende selecionar
-                ),
-              )
+              // new Container(
+              //   child: ListTile(
+              //     title: new Text(
+              //       'Sincronizar dados',
+              //       style: TextStyle(
+              //           color: Colors.black,
+              //           fontWeight: FontWeight.bold,
+              //           fontSize: 18),
+              //     ),
+              //     onTap: () async {
+              //       if (mounted)
+              //         setState(() {
+              //           DbHelper dbHelper = new DbHelper();
+              //           dbHelper.cacheData();
+              //         });
+              //     }, //0 é o índice da view que se pretende selecionar
+              //   ),
+              // )
             ],
           ),
         ),
