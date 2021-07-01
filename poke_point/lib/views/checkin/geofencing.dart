@@ -136,8 +136,8 @@ class _GeoFencingState extends State<GeoFencing> {
       MyToast.show(
           isCheckInSuccess ? 1 : 3,
           isCheckInSuccess
-              ? 'Checked-in successfully'
-              : 'Failed to check-in, try again later');
+              ? "Check-in com sucesso."
+              : "Falha a fazer check-in, tenta novamente mais tarde.");
       if (isCheckInSuccess) widget.changeCheckInToCheckOut();
     }
     // Callback to change navigation options

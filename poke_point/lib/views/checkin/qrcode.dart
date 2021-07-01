@@ -96,12 +96,8 @@ class _QRCodeState extends State<QRCode> {
     }
   }
 
-//
-//      >>  Só para efeitos de DESENVOLVIMENTO
-//        TROCAR A FUNÇÃO com a que está em baixo.
-//
-//
-// TODO Apagar aqui, descomentar a de baixo.
+//      Usado em modo dev
+// Comentar aqui, descomentar a de baixo.
   // Future<void> scanQRCode() async {
   //   setState(() {
   //     this.qrCodeResult = CustomParser.decodeFromQueryString(
@@ -110,8 +106,8 @@ class _QRCodeState extends State<QRCode> {
   //   });
   // }
 
-////////////////////////////////////////////////////// NÃO APAGAR ESTA FUNçÃO
-  ///                                                     Substitui a anterior
+  ///     Usado em modo Prod
+  ///     Substitui a anterior
   Future<void> scanQRCode() async {
     try {
       final qrCode = await FlutterBarcodeScanner.scanBarcode(
@@ -236,7 +232,7 @@ class _QRCodeState extends State<QRCode> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             new Text(
-              "Instructions:",
+              "Instruções:",
               style: TextStyle(
                 color: Colors.red[900],
                 fontWeight: FontWeight.bold,
@@ -244,7 +240,7 @@ class _QRCodeState extends State<QRCode> {
               ),
             ),
             new Text(
-              "Ask a checked-in colleague to generate a QR Code on the TapIn menu and press the 'Scan QR code' button to read it.",
+              "Pede a um colega que tenha feito check-in para gerar um QR code no menu TapIn. Depois carrega em Scan QR code e aponta para lá a câmara fotográfica traseira.",
               style: TextStyle(
                   color: Colors.black,
                   fontWeight: FontWeight.bold,
@@ -259,20 +255,20 @@ class _QRCodeState extends State<QRCode> {
   Future checkIn() async {
     // Checked-in succefully
 
-    // TODO APAGAR ESTE COMANDO
+    // Usado em modo Dev
     // this.qrCodeResult = CustomParser.decodeFromQueryString(
     //     "employeeId=7&employeeName=Igor Guedes&workplaceId=2&workplaceName=Obra 2&timestamp=1625013690482");
 
-    String checkInResult =
+    bool checkInResult =
         await Timecard.registerCheckInByTapIn(this.qrCodeResult);
 
     // Callback to change navigation options
-    if (checkInResult == null) widget.changeCheckInToCheckOut();
+    if (checkInResult) widget.changeCheckInToCheckOut();
 
     MyToast.show(
-        checkInResult == null ? 1 : 3,
-        checkInResult == null
-            ? "You have checked-in successfully"
-            : "Failed check-in. Try again later.");
+        checkInResult ? 1 : 3,
+        checkInResult
+            ? "Check-in com sucesso."
+            : "Falha a fazer check-in, tenta novamente mais tarde.");
   }
 }

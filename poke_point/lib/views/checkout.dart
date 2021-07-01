@@ -5,6 +5,9 @@ import '../utils/toaster.dart';
 import 'package:connectivity/connectivity.dart';
 import 'dart:async';
 import '../utils/connection.dart';
+import '../utils/db_helper.dart';
+import '../models/checkin.dart';
+import 'package:intl/intl.dart';
 
 class CheckOut extends StatefulWidget {
   CheckOut({Key key, this.changeCheckOutToCheckIn, this.changeBackToTimeTable})
@@ -18,12 +21,40 @@ class CheckOut extends StatefulWidget {
 }
 
 class _CheckOutState extends State<CheckOut> with TickerProviderStateMixin {
+  DbHelper dbHelper = new DbHelper();
+  Timer timer;
   bool isCheckOutPressed = false;
   Connectivity _connectivity = Connectivity();
   StreamSubscription<ConnectivityResult> _connectivitySubscription;
+  int checkInTimestampInMillis;
+  String timeToDisplay;
+
+  void updateCheckInTimeInMillis() async {
+    DateTime now = new DateTime.now();
+    int millisSinceCheckIn =
+        now.millisecondsSinceEpoch - checkInTimestampInMillis;
+
+    setState(() {
+      timeToDisplay = DateFormat('HH:mm:ss')
+          .format(new DateTime.fromMillisecondsSinceEpoch(millisSinceCheckIn));
+    });
+  }
+
+  void getLastCheckIn() async {
+    await dbHelper.openDb();
+    CheckIn checkIn = await dbHelper.getLastCheckIn();
+    DateTime chekInDt = DateTime.parse(checkIn.timestamp);
+    checkInTimestampInMillis = chekInDt.millisecondsSinceEpoch;
+  }
 
   @override
   void initState() {
+    getLastCheckIn();
+    updateCheckInTimeInMillis();
+    timer = Timer.periodic(
+      Duration(seconds: 1),
+      (Timer t) => {updateCheckInTimeInMillis()},
+    );
     super.initState();
     _connectivitySubscription =
         _connectivity.onConnectivityChanged.listen(_updateConnectionStatus);
@@ -31,6 +62,7 @@ class _CheckOutState extends State<CheckOut> with TickerProviderStateMixin {
 
   @override
   void dispose() {
+    timer?.cancel();
     _connectivitySubscription.cancel();
     super.dispose();
   }
@@ -60,8 +92,8 @@ class _CheckOutState extends State<CheckOut> with TickerProviderStateMixin {
       MyToast.show(
           isCheckOutSuccess ? 1 : 3,
           isCheckOutSuccess
-              ? "You have checked-out successfully"
-              : 'Failed to check-out, try again later');
+              ? "Check-out com sucesso."
+              : "Falha a fazer check-out, tenta novamente mais tarde.");
 
       if (isCheckOutSuccess)
         widget.changeCheckOutToCheckIn();
@@ -78,16 +110,27 @@ class _CheckOutState extends State<CheckOut> with TickerProviderStateMixin {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Container(
-              color: Color(0xFF11443c),
-              height: MediaQuery.of(context).size.height * 0.15, //150 ?
-              child: new Text(
-                'Aqui mostrar info da hora de check-in, lugar, tempo passado desde o check-in',
-                style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 25),
-              ),
-            ),
+                color: Color(0xFF11443c), //Colors.amber[600],
+                height: MediaQuery.of(context).size.height * 0.15, //150 ?,
+                width: MediaQuery.of(context).size.width,
+                child: new Column(
+                  children: [
+                    Text(
+                      'Checkout',
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 30),
+                    ),
+                    Text(
+                      'Tempo checked-in: ${checkInTimestampInMillis == null ? '' : timeToDisplay}',
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 15),
+                    ),
+                  ],
+                )),
             Container(
               child: SizedBox(
                 width: MediaQuery.of(context).size.width,

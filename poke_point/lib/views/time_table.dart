@@ -39,7 +39,7 @@ class _TimeTableState extends State<TimeTable> {
     await dbHelper.openDb();
 
     workplaces = await dbHelper.getWorkplaces();
-    timecards = await dbHelper.getTimecards();
+    timecards = await dbHelper.getTimecards(true);
     company = await dbHelper.getCompany();
     employee = await dbHelper.getEmployee();
 
@@ -136,75 +136,86 @@ class _TimeTableState extends State<TimeTable> {
                     )
                   : RefreshIndicator(
                       onRefresh: refreshList,
-                      child: new DataTable2(
-                        columnSpacing: 8,
-                        columns: const <DataColumn>[
-                          DataColumn(
-                            label: Text(
-                              'Local',
-                              style: TextStyle(
-                                  fontStyle: FontStyle.italic,
-                                  color: Colors.black),
-                            ),
-                          ),
-                          DataColumn(
-                            label: Text(
-                              'Check In',
-                              style: TextStyle(
-                                  fontStyle: FontStyle.italic,
-                                  color: Colors.black),
-                            ),
-                          ),
-                          DataColumn(
-                            label: Text(
-                              'Checked Out',
-                              style: TextStyle(
-                                  fontStyle: FontStyle.italic,
-                                  color: Colors.black),
-                            ),
-                          ),
-                        ],
-                        rows: <DataRow>[
-                          if (timecards != null)
-                            for (var timecard in timecards)
-                              DataRow(
-                                cells: <DataCell>[
-                                  DataCell(Text(
-                                      '${timecard.checkIn != null ? getWorkplaceFromId(timecard.checkIn.idWorkplace).name : ''}',
-                                      style: TextStyle(
-                                          fontStyle: FontStyle.italic,
-                                          color: Colors.black))),
-                                  DataCell(Badge(
-                                      showBadge: timecard.checkIn.offline,
-                                      elevation: 2,
-                                      borderRadius: BorderRadius.circular(8),
-                                      shape: BadgeShape.circle,
-                                      position: BadgePosition.topStart(),
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 4),
-                                      badgeContent: Text(''),
-                                      child: Text(
-                                          '${timecard.checkIn != null ? DateFormat('dd-MM-yy/HH:mm').format(DateFormat('yyyy-MM-ddTHH:mm:ss').parse(timecard.checkIn?.timestamp, true)) : ''}',
-                                          style: TextStyle(
-                                              fontStyle: FontStyle.italic,
-                                              color: Colors.black)))),
-                                  DataCell(Badge(
-                                      showBadge: timecard.checkIn.offline,
-                                      elevation: 2,
-                                      borderRadius: BorderRadius.circular(8),
-                                      shape: BadgeShape.circle,
-                                      position: BadgePosition.topStart(),
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 4),
-                                      badgeContent: Text(''),
-                                      child: Text(
-                                          '${timecard.checkOut != null ? DateFormat('dd-MM-yy/HH:mm').format(DateFormat('yyyy-MM-ddTHH:mm:ss').parse(timecard.checkOut?.timestamp, true)) : ''}',
-                                          style: TextStyle(
-                                              fontStyle: FontStyle.italic,
-                                              color: Colors.black)))),
-                                ],
+                      child: SingleChildScrollView(
+                        physics: AlwaysScrollableScrollPhysics(),
+                        child: new DataTable2(
+                          columnSpacing: 8,
+                          columns: const <DataColumn>[
+                            DataColumn(
+                              label: Text(
+                                'Local',
+                                style: TextStyle(
+                                    fontStyle: FontStyle.italic,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black),
                               ),
-                        ],
+                            ),
+                            DataColumn(
+                              label: Text(
+                                'Check In',
+                                style: TextStyle(
+                                    fontStyle: FontStyle.italic,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black),
+                              ),
+                            ),
+                            DataColumn(
+                              label: Text(
+                                'Checked Out',
+                                style: TextStyle(
+                                    fontStyle: FontStyle.italic,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black),
+                              ),
+                            ),
+                          ],
+                          rows: <DataRow>[
+                            if (timecards != null)
+                              for (var timecard in timecards)
+                                DataRow(
+                                  cells: <DataCell>[
+                                    DataCell(Text(
+                                        '${timecard.checkIn != null ? getWorkplaceFromId(timecard.checkIn.idWorkplace).name : ''}',
+                                        style: TextStyle(
+                                            fontStyle: FontStyle.italic,
+                                            color: Colors.black))),
+                                    DataCell(Badge(
+                                        showBadge: timecard.checkIn.offline,
+                                        elevation: 2,
+                                        borderRadius: BorderRadius.circular(8),
+                                        shape: BadgeShape.circle,
+                                        position: BadgePosition.topStart(),
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 4),
+                                        badgeContent: Text(''),
+                                        child: Text(
+                                            '${timecard.checkIn != null ? DateFormat('dd-MM-yy/HH:mm').format(DateFormat('yyyy-MM-ddTHH:mm:ss').parse(timecard.checkIn?.timestamp, true)) : ''}',
+                                            style: TextStyle(
+                                                fontStyle: FontStyle.italic,
+                                                color: Colors.black)))),
+                                    DataCell(Badge(
+                                        showBadge: timecard.checkOut != null
+                                            ? timecard.checkOut.offline
+                                            : false,
+                                        elevation: 2,
+                                        borderRadius: BorderRadius.circular(8),
+                                        shape: BadgeShape.circle,
+                                        position: BadgePosition.topStart(),
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 4),
+                                        badgeContent: Text(''),
+                                        child: Text(
+                                            '${timecard.checkOut != null ? DateFormat('dd-MM-yy/HH:mm').format(DateFormat('yyyy-MM-ddTHH:mm:ss').parse(timecard.checkOut?.timestamp, true)) : ''}',
+                                            style: TextStyle(
+                                                fontStyle: FontStyle.italic,
+                                                color: Colors.black)))),
+                                  ],
+                                ),
+                          ],
+                        ),
                       ),
                     ),
             )

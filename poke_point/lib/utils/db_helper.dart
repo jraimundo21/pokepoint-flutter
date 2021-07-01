@@ -271,7 +271,7 @@ class DbHelper {
     return id;
   }
 
-  Future<List<Timecard>> getTimecards() async {
+  Future<List<Timecard>> getTimecards([bool sortDesc = false]) async {
     final List<Map<String, dynamic>> result = await db.rawQuery(
         'SELECT tc.id, tc.idEmployee, tc.worktime, tc.offline FROM timecard tc JOIN current c ON tc.idEmployee = c.idUser');
     List<Timecard> timecards = List.generate(result.length, (i) {
@@ -288,8 +288,13 @@ class DbHelper {
       var checkOut = await getCheckOut(timecards[i].id);
       timecards[i].setCheckOut(checkOut);
     }
-    timecards
-        .sort((a, b) => a.checkIn.timestamp.compareTo(b.checkIn.timestamp));
+    if (sortDesc) {
+      timecards
+          .sort((a, b) => b.checkIn.timestamp.compareTo(a.checkIn.timestamp));
+    } else {
+      timecards
+          .sort((a, b) => a.checkIn.timestamp.compareTo(b.checkIn.timestamp));
+    }
     return timecards;
   }
 

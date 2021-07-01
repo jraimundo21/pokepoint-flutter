@@ -91,26 +91,38 @@ class Timecard {
     return checkin != null;
   }
 
-  static registerCheckInByTapIn(Map colleagueInfo) async {
-    DbHelper dbHelper = new DbHelper();
-    await dbHelper.openDb();
+  static Future<bool> registerCheckInByTapIn(Map colleagueInfo) async {
+    if (await Connection.isOnline()) {
+      return registerCheckInOnline(int.parse(colleagueInfo['workplaceId']));
+    } else {
+      try {
+        DbHelper dbHelper = new DbHelper();
+        await dbHelper.openDb();
 
-    int smallestCheckInId = await dbHelper.getSmallestCheckInId();
-    int smallestTimecardId = await dbHelper.getSmallestTimecardId();
-    int idEmployee = await dbHelper.getCurrentEmployeeId();
+        int smallestCheckInId = await dbHelper.getSmallestCheckInId();
+        int smallestTimecardId = await dbHelper.getSmallestTimecardId();
+        int idEmployee = await dbHelper.getCurrentEmployeeId();
 
-    Timecard timecard = new Timecard(
-        smallestTimecardId > 0 ? -1 : smallestTimecardId - 1, idEmployee, 0, 1);
+        Timecard timecard = new Timecard(
+            smallestTimecardId > 0 ? -1 : smallestTimecardId - 1,
+            idEmployee,
+            0,
+            1);
 
-    CheckIn checkIn = new CheckIn(
-        smallestCheckInId > 0 ? -1 : smallestCheckInId - 1,
-        int.parse(colleagueInfo['workplaceId']),
-        2,
-        timecard.id,
-        ('${new DateTime.now().toIso8601String()}Z'),
-        1);
+        CheckIn checkIn = new CheckIn(
+            smallestCheckInId > 0 ? -1 : smallestCheckInId - 1,
+            int.parse(colleagueInfo['workplaceId']),
+            2,
+            timecard.id,
+            ('${new DateTime.now().toIso8601String()}Z'),
+            1);
 
-    dbHelper.insertTimecard(timecard);
-    dbHelper.insertCheckIn(checkIn);
+        await dbHelper.insertTimecard(timecard);
+        await dbHelper.insertCheckIn(checkIn);
+        return true;
+      } catch (e) {
+        return false;
+      }
+    }
   }
 }

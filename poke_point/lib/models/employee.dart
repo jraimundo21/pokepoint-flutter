@@ -31,7 +31,10 @@ class Employee {
     DbHelper dbHelper = new DbHelper();
     await dbHelper.openDb();
 
-    Timecard lastTimecard = (await dbHelper.getTimecards()).last;
+    List<Timecard> timecards = await dbHelper.getTimecards();
+    if (timecards.isEmpty) return false;
+
+    Timecard lastTimecard = timecards.last;
     return lastTimecard.checkOut == null;
   }
 

@@ -118,7 +118,7 @@ class _TapInState extends State<TapIn> {
                         fontSize: 35),
                   ),
                   new Text(
-                    'Help your colleague check in with',
+                    'Ajuda o teu colega a fazer check-in com',
                     style: TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
@@ -139,7 +139,7 @@ class _TapInState extends State<TapIn> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               new Text(
-                                'Renewing in ',
+                                'O código renova em ',
                                 style: TextStyle(
                                     color: Colors.white,
                                     fontWeight: FontWeight.w300,
@@ -153,7 +153,7 @@ class _TapInState extends State<TapIn> {
                                     fontSize: 20),
                               ),
                               new Text(
-                                ' seconds.',
+                                ' segundos.',
                                 style: TextStyle(
                                     color: Colors.white,
                                     fontWeight: FontWeight.w300,
@@ -194,14 +194,14 @@ class _TapInState extends State<TapIn> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               new Text(
-                                'Instructions:',
+                                'Instruções:',
                                 style: TextStyle(
                                     color: Colors.red[600],
                                     fontWeight: FontWeight.bold,
                                     fontSize: 20),
                               ),
                               new Text(
-                                'Let your colleague scan this QR Code.', //\nOr, alternatively, turn on your NFC and put your mobiles together.',
+                                'Deixa o teu colega fazer scan do código.',
                                 style: TextStyle(
                                     color: Colors.black,
                                     fontWeight: FontWeight.bold,
