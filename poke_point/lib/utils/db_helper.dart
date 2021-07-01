@@ -130,6 +130,7 @@ class DbHelper {
 
   getLastCheckIn() async {
     List<Timecard> timecards = await getTimecards();
+    if (timecards.isEmpty) return null;
     CheckIn lastCheckIn = timecards[0]?.checkIn;
     timecards.forEach((timecard) {
       if (timecard.checkIn != null && timecard.checkIn.timestamp != null) {
@@ -289,11 +290,17 @@ class DbHelper {
       timecards[i].setCheckOut(checkOut);
     }
     if (sortDesc) {
-      timecards
-          .sort((a, b) => b.checkIn.timestamp.compareTo(a.checkIn.timestamp));
+      timecards.sort((a, b) => a.checkIn == null
+          ? -1
+          : b.checkIn == null
+              ? 1
+              : b.checkIn.timestamp.compareTo(a.checkIn.timestamp));
     } else {
-      timecards
-          .sort((a, b) => a.checkIn.timestamp.compareTo(b.checkIn.timestamp));
+      timecards.sort((a, b) => a.checkIn == null
+          ? 1
+          : b.checkIn == null
+              ? -1
+              : a.checkIn.timestamp.compareTo(b.checkIn.timestamp));
     }
     return timecards;
   }
