@@ -7,6 +7,8 @@ import '../utils/db_helper.dart';
 import '../models/employee.dart';
 import '../models/checkin.dart';
 import '../models/workplace.dart';
+import 'package:connectivity/connectivity.dart';
+import '../utils/connection.dart';
 
 class TapIn extends StatefulWidget {
   TapIn();
@@ -15,6 +17,8 @@ class TapIn extends StatefulWidget {
 }
 
 class _TapInState extends State<TapIn> {
+  Connectivity _connectivity = Connectivity();
+  StreamSubscription<ConnectivityResult> _connectivitySubscription;
   final int refreshRate = 5;
   int currentSecond;
   Timer timer;
@@ -38,14 +42,29 @@ class _TapInState extends State<TapIn> {
   void initState() {
     prepareDataForTapIn();
     currentSecond = refreshRate;
-
+    _connectivitySubscription =
+        _connectivity.onConnectivityChanged.listen(_updateConnectionStatus);
     super.initState();
     timer = Timer.periodic(
         Duration(seconds: 1), (Timer t) => updateCountDownTimer());
   }
 
+  Future<void> initConnectivity() async {
+    ConnectivityResult result = await _connectivity.checkConnectivity();
+    return _updateConnectionStatus(result);
+  }
+
+  Future<void> _updateConnectionStatus(ConnectivityResult result) async {
+    if (result == ConnectivityResult.wifi ||
+        result == ConnectivityResult.mobile)
+      setState(() {
+        Connection.synchronize();
+      });
+  }
+
   @override
   void dispose() {
+    _connectivitySubscription.cancel();
     timer?.cancel();
     super.dispose();
   }

@@ -2,13 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import '../utils/theme.dart';
 import './checkin/geofencing.dart';
-// import './checkin/nfc.dart';
 import './checkin/qrcode.dart';
-// import './checkin/manual.dart';
 import 'package:connectivity/connectivity.dart';
 import 'dart:async';
 import 'dart:ui';
 import '../models/employee.dart';
+import '../utils/connection.dart';
 
 class CheckIn extends StatefulWidget {
   CheckIn({Key key, this.changeCheckInToCheckOut, this.changeBackToTimeTable})
@@ -58,6 +57,7 @@ class _CheckInState extends State<CheckIn> {
       case ConnectivityResult.wifi:
       case ConnectivityResult.mobile:
         setState(() {
+          Connection.synchronize();
           _connectionStatus = 'Online';
           _online = true;
         });

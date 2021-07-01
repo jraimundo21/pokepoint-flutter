@@ -311,6 +311,16 @@ class DbHelper {
     return id;
   }
 
+  Future<void> updateTableWhereId(table, int whereId, changes) async {
+    await this.db.update(
+          table,
+          changes,
+          where: 'id = ?',
+          whereArgs: [whereId],
+          conflictAlgorithm: ConflictAlgorithm.replace,
+        );
+  }
+
   Future<Employee> getEmployee() async {
     final List<Map<String, dynamic>> result = await db.rawQuery(
         'SELECT e.id, e.idCompany, e.name, e.nif, e.address, e.email, e.phone FROM employee e JOIN current c on e.id = c.idUser');

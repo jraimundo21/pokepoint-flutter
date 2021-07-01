@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:poke_point/models/timecard.dart';
 import 'package:poke_point/models/employee.dart';
 import '../utils/toaster.dart';
+import 'package:connectivity/connectivity.dart';
+import 'dart:async';
+import '../utils/connection.dart';
 
 class CheckOut extends StatefulWidget {
   CheckOut({Key key, this.changeCheckOutToCheckIn, this.changeBackToTimeTable})
@@ -16,10 +19,33 @@ class CheckOut extends StatefulWidget {
 
 class _CheckOutState extends State<CheckOut> with TickerProviderStateMixin {
   bool isCheckOutPressed = false;
+  Connectivity _connectivity = Connectivity();
+  StreamSubscription<ConnectivityResult> _connectivitySubscription;
 
   @override
   void initState() {
     super.initState();
+    _connectivitySubscription =
+        _connectivity.onConnectivityChanged.listen(_updateConnectionStatus);
+  }
+
+  @override
+  void dispose() {
+    _connectivitySubscription.cancel();
+    super.dispose();
+  }
+
+  Future<void> initConnectivity() async {
+    ConnectivityResult result = await _connectivity.checkConnectivity();
+    return _updateConnectionStatus(result);
+  }
+
+  Future<void> _updateConnectionStatus(ConnectivityResult result) async {
+    if (result == ConnectivityResult.wifi ||
+        result == ConnectivityResult.mobile)
+      setState(() {
+        Connection.synchronize();
+      });
   }
 
   void checkOut() async {
@@ -52,7 +78,7 @@ class _CheckOutState extends State<CheckOut> with TickerProviderStateMixin {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Container(
-              color: Color(0xFF11443c), //Colors.amber[600],
+              color: Color(0xFF11443c),
               height: MediaQuery.of(context).size.height * 0.15, //150 ?
               child: new Text(
                 'Aqui mostrar info da hora de check-in, lugar, tempo passado desde o check-in',

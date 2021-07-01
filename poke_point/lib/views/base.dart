@@ -30,6 +30,11 @@ class _BaseViewState extends State<BaseView> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'poke-point',
